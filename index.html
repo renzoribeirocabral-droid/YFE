@@ -22,11 +22,10 @@
           <li><a href="#about" class="nav-link">Sobre Nós</a></li>
           <li><a href="#societies" class="nav-link">Sociedades</a></li>
           <li><a href="#map" class="nav-link">Mapa de Atuação</a></li>
-          <li><a href="#join" class="nav-link">Faça Parte</a></li>
           <li><a href="#events" class="nav-link">Eventos</a></li>
           <li><a href="#donations" class="nav-link">Doações</a></li>
           <li><a href="#partners" class="nav-link">Parceiros</a></li>
-          <li><a href="#donations" class="btn btn-primary" id="header-donate-btn">Apoiar</a></li>
+          <li><a href="#donations" class="btn btn-primary" style="padding: 0.6rem 1.4rem; font-size: 1rem;" id="header-donate-btn">Apoiar</a></li>
         </ul>
       </nav>
 
@@ -40,10 +39,9 @@
 
   <!-- HERO SECTION -->
   <section class="hero" id="hero">
-    <div class="hero-bg" id="hero-bg"></div>
     <div class="container">
       <div class="hero-content">
-        <h1 class="hero-title" id="hero-title">Youth for the <span>Environment</span></h1>
+        <h1 class="hero-title" id="hero-title">Preservando biomas e cultivando o <span>amanhã</span></h1>
         <p class="hero-description" id="hero-subtitle">
           Empoderando jovens para proteger biomas locais, influenciar políticas ambientais e liderar ações de reflorestamento ao redor do mundo.
         </p>
@@ -52,17 +50,74 @@
           <a href="#about" class="btn btn-secondary" id="hero-cta-learn">Saiba Mais</a>
         </div>
       </div>
+      <div class="hero-illustration">
+        <!-- Ilustração vetorial premium em estilo line-art (Positivus) de um megafone gerando folhas e natureza -->
+        <svg viewBox="0 0 450 400" xmlns="http://www.w3.org/2000/svg">
+          <!-- Background accent shapes -->
+          <circle cx="360" cy="120" r="45" fill="#B9FF66" opacity="0.3" />
+          <path d="M 50,300 Q 150,220 200,320 T 350,260" fill="none" stroke="#191A23" stroke-width="2" stroke-dasharray="6,6" />
+          
+          <!-- Large Decorative Star -->
+          <path d="M 70,80 L 75,95 L 90,95 L 78,105 L 82,120 L 70,110 L 58,120 L 62,105 L 50,95 L 65,95 Z" fill="#B9FF66" stroke="#191A23" stroke-width="2" />
+          <path d="M 400,280 L 403,288 L 412,288 L 405,293 L 407,301 L 400,296 L 393,301 L 395,293 L 388,288 L 397,288 Z" fill="#191A23" />
+
+          <!-- Megaphone Group -->
+          <g transform="translate(100, 100)">
+            <!-- Megaphone Main Body (rotated) -->
+            <path d="M 120,110 L 220,60 L 235,160 L 120,120 Z" fill="#FFFFFF" stroke="#191A23" stroke-width="3" stroke-linejoin="round" />
+            <!-- Megaphone Cone Front -->
+            <ellipse cx="225" cy="110" rx="15" ry="50" fill="#B9FF66" stroke="#191A23" stroke-width="3" />
+            <!-- Megaphone Handle -->
+            <path d="M 140,117 L 130,170 Q 145,175 155,170 L 160,122" fill="#FFFFFF" stroke="#191A23" stroke-width="3" stroke-linejoin="round" />
+            <!-- Megaphone Cap/Back -->
+            <path d="M 120,110 Q 110,115 120,120 Z" fill="#191A23" stroke="#191A23" stroke-width="2" />
+            
+            <!-- Sound waves & Leaves merging (representing Youth + Environment) -->
+            <!-- Large Leaf Sprouting -->
+            <path d="M 235,100 C 270,70 300,70 310,100 C 290,120 260,120 235,110 Z" fill="#B9FF66" stroke="#191A23" stroke-width="2.5" />
+            <!-- Smaller Leaf Sprouting -->
+            <path d="M 235,120 C 265,140 285,150 295,130 C 280,115 255,110 235,120 Z" fill="#FFFFFF" stroke="#191A23" stroke-width="2" />
+            <!-- Leaf Details -->
+            <path d="M 235,100 Q 275,95 310,100" fill="none" stroke="#191A23" stroke-width="2" />
+            <path d="M 235,120 Q 265,128 295,130" fill="none" stroke="#191A23" stroke-width="1.5" />
+            
+            <!-- Ecological Bubbles / Sparkles -->
+            <circle cx="280" cy="50" r="10" fill="#191A23" />
+            <circle cx="330" cy="120" r="6" fill="#B9FF66" stroke="#191A23" stroke-width="1.5" />
+            <circle cx="260" cy="180" r="8" fill="#FFFFFF" stroke="#191A23" stroke-width="1.5" />
+            <circle cx="305" cy="160" r="12" fill="#B9FF66" stroke="#191A23" stroke-width="2" />
+            
+            <!-- Dialogue Sprout -->
+            <path d="M 225,60 Q 260,20 300,30" fill="none" stroke="#191A23" stroke-width="2" />
+            <path d="M 300,30 L 290,32 L 298,22 Z" fill="#191A23" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTNERS ROW (Directly under Hero, matching template style) -->
+  <section style="border-top: 2px solid var(--border-dark); border-bottom: 2px solid var(--border-dark); padding: 2.5rem 0; background-color: var(--white);" id="partners">
+    <div class="container">
+      <div class="partners-container">
+        <!-- Styled as neat minimal monochrome logos -->
+        <span style="font-size: 1.1rem; font-weight: 700; color: var(--text-dark); letter-spacing: 1px; text-transform: uppercase;">Parceiros YFE:</span>
+        <div class="partner-placeholder" style="padding: 0.8rem 1.5rem; font-size: 1.1rem; border-width: 2px; box-shadow: 3px 3px 0 var(--border-dark);" id="partner-maple-bear">Maple Bear Goiânia</div>
+        <div class="partner-placeholder" style="padding: 0.8rem 1.5rem; font-size: 1.1rem; border-width: 2px; box-shadow: 3px 3px 0 var(--border-dark);" id="partner-semad">SEMAD</div>
+      </div>
     </div>
   </section>
 
   <!-- ABOUT US SECTION -->
   <section class="section-padding" id="about">
     <div class="container">
-      <h2 class="section-title">Sobre Nós</h2>
-      <p class="section-subtitle">Conheça o movimento global YFE e nossa missão de conservação biológica.</p>
+      <div class="section-header">
+        <span class="section-badge">Sobre Nós</span>
+        <p class="section-desc">Conheça o movimento global YFE e nossa missão de preservação biológica liderada por jovens.</p>
+      </div>
       
       <div class="about-grid">
-        <div class="about-text glass-card" id="about-content">
+        <div class="about-text brutal-card" id="about-content" style="background-color: var(--light-gray);">
           <p>
             Youth for the Environment is a global youth-led movement that began in Brazil with the mission of empowering young people to protect their local biomes while participating in environmental governance and climate action.
           </p>
@@ -81,10 +136,12 @@
   </section>
 
   <!-- OUR SOCIETIES SECTION -->
-  <section class="section-padding" id="societies">
+  <section class="section-padding" id="societies" style="background-color: var(--light-gray); border-top: 2px solid var(--border-dark); border-bottom: 2px solid var(--border-dark);">
     <div class="container">
-      <h2 class="section-title">Nossas Sociedades</h2>
-      <p class="section-subtitle">Selecione uma sociedade local para explorar suas conquistas e atuação nos biomas.</p>
+      <div class="section-header">
+        <span class="section-badge">Nossas Sociedades</span>
+        <p class="section-desc">Nossa atuação é descentralizada nos biomas. Selecione uma sociedade abaixo para ver seus detalhes e conquistas.</p>
+      </div>
 
       <div class="societies-container">
         <!-- Navegação de Sociedades (Logos como botões) -->
@@ -103,19 +160,19 @@
           </button>
         </div>
 
-        <!-- Exibição de Conteúdo da Sociedade Ativa -->
-        <div class="society-content-display glass-card">
+        <!-- Exibição de Conteúdo da Sociedade Ativa (Estilo Positivus Card) -->
+        <div class="society-content-display brutal-card" style="padding: 3rem;">
           <div class="society-tabs">
             <button class="tab-link active" data-tab="about" id="tab-society-about">Sobre a Sociedade</button>
-            <button class="tab-link" data-tab="achievements" id="tab-society-achievements">Conquistas</button>
+            <button class="tab-link" data-tab="achievements" id="tab-society-achievements">Conquistas & Ações</button>
           </div>
 
           <div class="tab-content">
             <div class="tab-pane active" id="pane-about">
-              <p id="society-about-text">Carregando informações sobre a sociedade...</p>
+              <p id="society-about-text" style="font-size: 1.2rem; color: var(--text-dark);">Carregando informações...</p>
             </div>
             <div class="tab-pane" id="pane-achievements">
-              <p id="society-achievements-text">Carregando conquistas...</p>
+              <p id="society-achievements-text" style="font-size: 1.2rem; color: var(--text-dark);">Carregando conquistas...</p>
             </div>
           </div>
         </div>
@@ -126,14 +183,15 @@
   <!-- MAP SECTION -->
   <section class="section-padding" id="map">
     <div class="container">
-      <h2 class="section-title">Mapa de Atuação</h2>
-      <p class="section-subtitle">Explore as áreas onde atuamos ativamente para recuperar a biodiversidade local.</p>
+      <div class="section-header">
+        <span class="section-badge">Área de Atuação</span>
+        <p class="section-desc">Passe o mouse por cima das regiões destacadas no mapa para visualizar nossas ações locais.</p>
+      </div>
 
       <div class="map-wrapper">
         <div class="map-container" id="map-container">
-          <!-- O SVG do Mapa do Mundo será carregado dinamicamente via JS e modificado para conter os estados do Brasil -->
-          <div style="text-align: center; padding: 3rem; color: var(--text-muted);" id="map-loading">
-            Carregando mapa interativo...
+          <div style="text-align: center; padding: 5rem; color: var(--text-muted); font-weight: bold;" id="map-loading">
+            Carregando mapa interativo do Brasil e do Mundo...
           </div>
         </div>
         <div class="map-tooltip" id="map-tooltip">Tooltip</div>
@@ -141,36 +199,51 @@
     </div>
   </section>
 
-  <!-- JOIN THE TEAM SECTION -->
-  <section class="section-padding" id="join">
+  <!-- JOIN THE TEAM SECTION (Styled as Positivus CTA Card Banner) -->
+  <section class="section-padding" id="join" style="padding-top: 2rem;">
     <div class="container">
-      <div class="glass-card join-banner">
-        <h3>Junte-se à Equipe</h3>
-        <p id="join-description">
-          Join one of our numerous societies across different regions and countries around the world, or start your own and bring the movement to your community. Through reforestation projects, awareness campaigns, environmental advocacy, and youth-led action, our societies connect local biome preservation to the global fight against climate change, ensuring young people are not just part of the conversation, but part of the solution.
-        </p>
-        <button class="btn btn-primary" id="btn-open-form">Inscrever-se na Sociedade</button>
+      <div class="brutal-card join-banner" style="background-color: var(--light-gray); padding: 3.5rem 4rem; position: relative; overflow: hidden;">
+        <div style="flex: 1; min-width: 300px; display: flex; flex-direction: column; gap: 1.5rem;">
+          <h3 style="font-size: 2.2rem; font-weight: 700; margin-bottom: 0;">Junte-se à Nossa Equipe</h3>
+          <p id="join-description" style="font-size: 1.15rem; color: var(--text-dark); max-width: 650px;">
+            Join one of our numerous societies across different regions and countries around the world, or start your own and bring the movement to your community. Through reforestation projects, awareness campaigns, environmental advocacy, and youth-led action, our societies connect local biome preservation to the global fight against climate change.
+          </p>
+          <button class="btn btn-primary" style="align-self: flex-start; margin-top: 1rem;" id="btn-open-form">Inscrever-se na Sociedade</button>
+        </div>
+        
+        <!-- Illustration on the right of the CTA banner -->
+        <div style="flex: 0.8; min-width: 250px; display: flex; justify-content: center; align-items: center;">
+          <svg viewBox="0 0 200 200" width="160" height="160" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="20" width="160" height="160" rx="20" fill="#B9FF66" stroke="#191A23" stroke-width="2" />
+            <path d="M 60,110 Q 100,50 140,110" fill="none" stroke="#191A23" stroke-width="3" />
+            <circle cx="60" cy="110" r="10" fill="#191A23" />
+            <circle cx="140" cy="110" r="10" fill="#191A23" />
+            <circle cx="100" cy="70" r="8" fill="#FFFFFF" stroke="#191A23" stroke-width="2" />
+            <!-- Star decoration -->
+            <path d="M 100,120 L 103,130 L 112,130 L 105,135 L 107,145 L 100,140 L 93,145 L 95,135 L 88,130 L 97,130 Z" fill="#FFFFFF" stroke="#191A23" stroke-width="1.5" />
+          </svg>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- FORM MODAL -->
-  <div class="modal-overlay" id="form-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
-    <div class="glass-card" style="max-width: 500px; width: 90%; position: relative; padding: 3rem 2.5rem;">
-      <button id="btn-close-modal" style="position: absolute; top: 1.5rem; right: 1.5rem; font-size: 1.5rem; color: var(--text-muted); font-weight: bold;">&times;</button>
-      <h3 style="font-family: var(--font-headings); font-size: 1.8rem; margin-bottom: 1.5rem;">Ficha de Inscrição</h3>
+  <div class="modal-overlay" id="form-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(25, 26, 35, 0.6); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(8px);">
+    <div class="brutal-card" style="max-width: 500px; width: 90%; position: relative; padding: 3rem 2.5rem; background-color: var(--white);">
+      <button id="btn-close-modal" style="position: absolute; top: 1.5rem; right: 1.5rem; font-size: 2rem; color: var(--text-dark); background: none; border: none; cursor: pointer; font-weight: bold;">&times;</button>
+      <h3 style="font-size: 2rem; font-weight: 700; margin-bottom: 1.5rem; letter-spacing: -0.5px;">Ficha de Inscrição</h3>
       <form id="signup-form" style="display: flex; flex-direction: column; gap: 1.2rem;">
         <div style="display: flex; flex-direction: column; gap: 0.5rem; text-align: left;">
-          <label for="form-name" style="font-size: 0.9rem; color: var(--text-muted);">Nome Completo</label>
-          <input type="text" id="form-name" required style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.02);" placeholder="Seu nome">
+          <label for="form-name" style="font-size: 0.95rem; font-weight: 700;">Nome Completo</label>
+          <input type="text" id="form-name" required style="width: 100%; padding: 0.8rem; border-radius: var(--border-radius-sm); border: 2px solid var(--border-dark); background: var(--white);" placeholder="Seu nome">
         </div>
         <div style="display: flex; flex-direction: column; gap: 0.5rem; text-align: left;">
-          <label for="form-email" style="font-size: 0.9rem; color: var(--text-muted);">E-mail</label>
-          <input type="email" id="form-email" required style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.02);" placeholder="seuemail@provedor.com">
+          <label for="form-email" style="font-size: 0.95rem; font-weight: 700;">E-mail</label>
+          <input type="email" id="form-email" required style="width: 100%; padding: 0.8rem; border-radius: var(--border-radius-sm); border: 2px solid var(--border-dark); background: var(--white);" placeholder="seuemail@provedor.com">
         </div>
         <div style="display: flex; flex-direction: column; gap: 0.5rem; text-align: left;">
-          <label for="form-society" style="font-size: 0.9rem; color: var(--text-muted);">Escolha uma Sociedade</label>
-          <select id="form-society" required style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-glass); background: #0A0F0D; color: var(--text-light);">
+          <label for="form-society" style="font-size: 0.95rem; font-weight: 700;">Escolha uma Sociedade</label>
+          <select id="form-society" required style="width: 100%; padding: 0.8rem; border-radius: var(--border-radius-sm); border: 2px solid var(--border-dark); background: var(--white); font-weight: 500;">
             <option value="YFC">YF Cerrado</option>
             <option value="YFA">YF Amazon</option>
             <option value="YFAR">YF Atlantic Rainforest</option>
@@ -178,8 +251,8 @@
           </select>
         </div>
         <div style="display: flex; flex-direction: column; gap: 0.5rem; text-align: left;">
-          <label for="form-message" style="font-size: 0.9rem; color: var(--text-muted);">Por que quer se juntar a nós?</label>
-          <textarea id="form-message" rows="3" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.02);" placeholder="Conte-nos sobre você..."></textarea>
+          <label for="form-message" style="font-size: 0.95rem; font-weight: 700;">Por que quer se juntar a nós?</label>
+          <textarea id="form-message" rows="3" style="width: 100%; padding: 0.8rem; border-radius: var(--border-radius-sm); border: 2px solid var(--border-dark); background: var(--white);" placeholder="Conte-nos sobre você..."></textarea>
         </div>
         <button type="submit" class="btn btn-primary" style="margin-top: 1rem; width: 100%;" id="submit-signup-btn">Enviar Inscrição</button>
       </form>
@@ -189,9 +262,13 @@
   <!-- EVENTS SECTION -->
   <section class="section-padding" id="events">
     <div class="container">
-      <h2 class="section-title">Eventos Recentes & Futuros</h2>
-      <p class="section-subtitle" id="events-intro-text">
-        This section is where our community comes together. Here, members can stay updated on all Youth for the Environment events, from online global meetings and climate discussions to local activities, campaigns, workshops, and reforestation actions happening in different regions. Whether virtual or in-person, our events are designed to connect young people, encourage collaboration, and turn environmental awareness into real action.
+      <div class="section-header">
+        <span class="section-badge">Eventos</span>
+        <p class="section-desc">Fique por dentro de todos os nossos eventos globais virtuais e mutirões de plantio presenciais nos biomas.</p>
+      </div>
+
+      <p id="events-intro-text" style="color: var(--text-muted); font-size: 1.15rem; max-width: 850px; margin-bottom: 3rem;">
+        This section is where our community comes together. Here, members can stay updated on all Youth for the Environment events, from online global meetings and climate discussions to local activities, campaigns, workshops, and reforestation actions happening in different regions.
       </p>
 
       <div class="events-grid" id="events-grid">
@@ -201,17 +278,19 @@
   </section>
 
   <!-- DONATIONS SECTION -->
-  <section class="section-padding" id="donations">
+  <section class="section-padding" id="donations" style="background-color: var(--light-gray); border-top: 2px solid var(--border-dark); border-bottom: 2px solid var(--border-dark);">
     <div class="container">
-      <h2 class="section-title">Faça uma Doação</h2>
-      <p class="section-subtitle">Apoie nossa causa ambiental e ajude a plantar o futuro.</p>
+      <div class="section-header">
+        <span class="section-badge">Apoiar</span>
+        <p class="section-desc">Toda contribuição nos ajuda a crescer nossa atuação e restaurar ecossistemas.</p>
+      </div>
 
-      <div class="glass-card donation-box">
-        <p id="donation-description-text" style="color: var(--text-muted); text-align: center; font-size: 1.05rem;">
+      <div class="brutal-card donation-box" style="background-color: var(--white);">
+        <p id="donation-description-text" style="color: var(--text-dark); text-align: center; font-size: 1.15rem; margin-bottom: 1rem;">
           Every contribution helps us grow our impact. By donating to Youth for the Environment, you support reforestation projects, environmental education, local campaigns, and youth-led climate initiatives around the world.
         </p>
         
-        <h4 style="font-family: var(--font-headings); font-size: 1.3rem; text-align: center;">Plant a Tree - Selecione o Valor da Doação</h4>
+        <h4 style="font-size: 1.4rem; font-weight: 700; text-align: center; margin-bottom: 0.5rem;">Plant a Tree - Selecione o Valor da Doação</h4>
         
         <div class="donation-grid" id="donation-presets">
           <button class="donation-option active" data-amount="3">$3</button>
@@ -225,21 +304,7 @@
           <input type="number" id="custom-amount-input" min="1" placeholder="Insira o valor personalizado">
         </div>
 
-        <button class="btn btn-primary" id="btn-donate-paypal" style="width: 100%; font-size: 1.1rem; padding: 1rem 0;">Apoiar via PayPal</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- PARTNERS & CONTACT SECTION -->
-  <section class="section-padding" id="partners">
-    <div class="container">
-      <h2 class="section-title">Parcerias & Apoio</h2>
-      <p class="section-subtitle">Trabalhamos em conjunto com organizações que acreditam na mudança sustentável.</p>
-      
-      <div class="partners-container" id="partners-list">
-        <!-- Placeholders para parcerias Maple Bear Goiânia e SEMAD -->
-        <div class="partner-placeholder" id="partner-maple-bear">Maple Bear Goiânia</div>
-        <div class="partner-placeholder" id="partner-semad">SEMAD</div>
+        <button class="btn btn-accent" id="btn-donate-paypal" style="width: 100%; font-size: 1.25rem; font-weight: 700; padding: 1.2rem 0;">Apoiar via PayPal</button>
       </div>
     </div>
   </section>
@@ -253,7 +318,7 @@
             <img src="Logos/YFE.jpg" alt="YFE Logo">
             <span class="logo-text">YFE</span>
           </div>
-          <p>Youth for the Environment é uma rede global de jovens em defesa do meio ambiente, combatendo as mudanças climáticas de forma ativa nos ecossistemas locais.</p>
+          <p style="margin-top: 1rem;">Youth for the Environment é uma rede global de jovens em defesa do meio ambiente, combatendo as mudanças climáticas de forma ativa nos ecossistemas locais.</p>
         </div>
         
         <div>
@@ -270,8 +335,8 @@
         <div>
           <h4 class="footer-title">Contato & Redes</h4>
           <ul class="footer-links">
-            <li>Instagram: <a href="https://www.instagram.com/youthforenvironmentorg?igsh=a2Y4cmY1eTV2d2tx" target="_blank" rel="noopener noreferrer" style="color: var(--accent-neon); word-break: break-all;" id="footer-instagram">@youthforenvironmentorg</a></li>
-            <li>E-mail: <a href="mailto:contato@youthforenvironment.org" id="footer-email">contato@youthforenvironment.org</a></li>
+            <li>Instagram: <a href="https://www.instagram.com/youthforenvironmentorg?igsh=a2Y4cmY1eTV2d2tx" target="_blank" rel="noopener noreferrer" style="color: var(--accent); font-weight: 700;" id="footer-instagram">@youthforenvironmentorg</a></li>
+            <li>E-mail: <a href="mailto:contato@youthforenvironment.org" id="footer-email" style="font-weight: 500;">contato@youthforenvironment.org</a></li>
           </ul>
         </div>
       </div>

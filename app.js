@@ -209,7 +209,7 @@ async function loadInteractiveMap() {
     const states = brazilDoc.querySelectorAll(".state");
     states.forEach(state => {
       // Adiciona classe e borda
-      state.setAttribute("stroke", "#0B3C20");
+      state.setAttribute("stroke", "#B5B5B5");
       state.setAttribute("stroke-width", "0.4");
       
       // Verifica se o estado é ativo para destacar
