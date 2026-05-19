@@ -1,0 +1,32 @@
+{
+  "rootFolderId": "1LaCT5FHlQ6vhlmJnkTLELFlGh4P83aBs",
+  "projects": {
+    "YFE": {
+      "folderId": "1wnh5A8YAjZsGMRBgNdwuguJaWz5mn-0T",
+      "description": "Young Forest Ecosystem - Plataforma de Reflorestamento",
+      "contentMapping": {
+        "hero": {
+          "description": "Imagens e textos da seção principal (hero banner)",
+          "expectedFiles": ["hero-image.jpg", "hero-text.json"]
+        },
+        "about": {
+          "description": "Seção Sobre o projeto",
+          "expectedFiles": ["about-text.json", "about-images/"]
+        },
+        "gallery": {
+          "description": "Galeria de fotos do reflorestamento",
+          "expectedFiles": ["gallery-images/"]
+        },
+        "impact": {
+          "description": "Dados de impacto e métricas",
+          "expectedFiles": ["impact-data.json"]
+        }
+      }
+    }
+  },
+  "sync": {
+    "cacheDir": "content/drive-cache",
+    "outputDir": "content",
+    "autoSyncIntervalMs": 300000
+  }
+}
