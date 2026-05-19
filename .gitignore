@@ -13,6 +13,9 @@ build/
 # Drive synced content (downloaded dynamically)
 content/drive-cache/
 
+# Document files
+*.pdf
+
 # OS files
 .DS_Store
 Thumbs.db

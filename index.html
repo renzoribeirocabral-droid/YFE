@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Youth for the Environment (YFE) - Reforestation & Climate Action</title>
+  <meta name="description" content="Youth for the Environment (YFE) é um movimento global liderado por jovens para proteger biomas locais através de reflorestamento, conscientização e governança climática.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- HEADER & NAVIGATION -->
+  <header id="header">
+    <div class="container nav-container">
+      <a href="#" class="logo" id="logo-link">
+        <img src="Logos/YFE.jpg" alt="YFE Logo">
+        <span class="logo-text">YFE</span>
+      </a>
+      
+      <nav>
+        <ul class="nav-menu" id="nav-menu">
+          <li><a href="#about" class="nav-link">Sobre Nós</a></li>
+          <li><a href="#societies" class="nav-link">Sociedades</a></li>
+          <li><a href="#map" class="nav-link">Mapa de Atuação</a></li>
+          <li><a href="#join" class="nav-link">Faça Parte</a></li>
+          <li><a href="#events" class="nav-link">Eventos</a></li>
+          <li><a href="#donations" class="nav-link">Doações</a></li>
+          <li><a href="#partners" class="nav-link">Parceiros</a></li>
+          <li><a href="#donations" class="btn btn-primary" id="header-donate-btn">Apoiar</a></li>
+        </ul>
+      </nav>
+
+      <div class="burger-menu" id="burger-menu" aria-label="Menu" role="button">
+        <span class="burger-bar"></span>
+        <span class="burger-bar"></span>
+        <span class="burger-bar"></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero" id="hero">
+    <div class="hero-bg" id="hero-bg"></div>
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title" id="hero-title">Youth for the <span>Environment</span></h1>
+        <p class="hero-description" id="hero-subtitle">
+          Empoderando jovens para proteger biomas locais, influenciar políticas ambientais e liderar ações de reflorestamento ao redor do mundo.
+        </p>
+        <div class="hero-cta">
+          <a href="#join" class="btn btn-primary" id="hero-cta-join">Junte-se à Equipe</a>
+          <a href="#about" class="btn btn-secondary" id="hero-cta-learn">Saiba Mais</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT US SECTION -->
+  <section class="section-padding" id="about">
+    <div class="container">
+      <h2 class="section-title">Sobre Nós</h2>
+      <p class="section-subtitle">Conheça o movimento global YFE e nossa missão de conservação biológica.</p>
+      
+      <div class="about-grid">
+        <div class="about-text glass-card" id="about-content">
+          <p>
+            Youth for the Environment is a global youth-led movement that began in Brazil with the mission of empowering young people to protect their local biomes while participating in environmental governance and climate action.
+          </p>
+          <p>
+            Through reforestation initiatives, awareness campaigns, and youth-led policy discussions, we connect local environmental challenges to the global climate crisis.
+          </p>
+          <p>
+            We believe the generation most affected by climate change must also help shape the decisions surrounding it. That’s why we work to ensure young people are not just future leaders, but active voices in protecting ecosystems, influencing environmental policy, and building a more sustainable future: starting within their own communities.
+          </p>
+        </div>
+        <div class="about-image-wrapper">
+          <img src="Logos/YFE.jpg" alt="Reforestation YFE" class="about-image" id="about-img">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUR SOCIETIES SECTION -->
+  <section class="section-padding" id="societies">
+    <div class="container">
+      <h2 class="section-title">Nossas Sociedades</h2>
+      <p class="section-subtitle">Selecione uma sociedade local para explorar suas conquistas e atuação nos biomas.</p>
+
+      <div class="societies-container">
+        <!-- Navegação de Sociedades (Logos como botões) -->
+        <div class="societies-nav" id="societies-nav">
+          <button class="society-btn active" data-society="YFC" id="btn-society-yfc">
+            <img src="Logos/YFC.png" alt="YF Cerrado Logo">
+            <span>YF Cerrado</span>
+          </button>
+          <button class="society-btn" data-society="YFA" id="btn-society-yfa">
+            <img src="Logos/YFA.jpg" alt="YF Amazon Logo">
+            <span>YF Amazon</span>
+          </button>
+          <button class="society-btn" data-society="YFAR" id="btn-society-yfar">
+            <img src="Logos/YFAR.jpg" alt="YF Atlantic Rainforest Logo">
+            <span>YF Atlantic Rainforest</span>
+          </button>
+        </div>
+
+        <!-- Exibição de Conteúdo da Sociedade Ativa -->
+        <div class="society-content-display glass-card">
+          <div class="society-tabs">
+            <button class="tab-link active" data-tab="about" id="tab-society-about">Sobre a Sociedade</button>
+            <button class="tab-link" data-tab="achievements" id="tab-society-achievements">Conquistas</button>
+          </div>
+
+          <div class="tab-content">
+            <div class="tab-pane active" id="pane-about">
+              <p id="society-about-text">Carregando informações sobre a sociedade...</p>
+            </div>
+            <div class="tab-pane" id="pane-achievements">
+              <p id="society-achievements-text">Carregando conquistas...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAP SECTION -->
+  <section class="section-padding" id="map">
+    <div class="container">
+      <h2 class="section-title">Mapa de Atuação</h2>
+      <p class="section-subtitle">Explore as áreas onde atuamos ativamente para recuperar a biodiversidade local.</p>
+
+      <div class="map-wrapper">
+        <div class="map-container" id="map-container">
+          <!-- O SVG do Mapa do Mundo será carregado dinamicamente via JS e modificado para conter os estados do Brasil -->
+          <div style="text-align: center; padding: 3rem; color: var(--text-muted);" id="map-loading">
+            Carregando mapa interativo...
+          </div>
+        </div>
+        <div class="map-tooltip" id="map-tooltip">Tooltip</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOIN THE TEAM SECTION -->
+  <section class="section-padding" id="join">
+    <div class="container">
+      <div class="glass-card join-banner">
+        <h3>Junte-se à Equipe</h3>
+        <p id="join-description">
+          Join one of our numerous societies across different regions and countries around the world, or start your own and bring the movement to your community. Through reforestation projects, awareness campaigns, environmental advocacy, and youth-led action, our societies connect local biome preservation to the global fight against climate change, ensuring young people are not just part of the conversation, but part of the solution.
+        </p>
+        <button class="btn btn-primary" id="btn-open-form">Inscrever-se na Sociedade</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORM MODAL -->
+  <div class="modal-overlay" id="form-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
+    <div class="glass-card" style="max-width: 500px; width: 90%; position: relative; padding: 3rem 2.5rem;">
+      <button id="btn-close-modal" style="position: absolute; top: 1.5rem; right: 1.5rem; font-size: 1.5rem; color: var(--text-muted); font-weight: bold;">&times;</button>
+      <h3 style="font-family: var(--font-headings); font-size: 1.8rem; margin-bottom: 1.5rem;">Ficha de Inscrição</h3>
+      <form id="signup-form" style="display: flex; flex-direction: column; gap: 1.2rem;">
+        <div style="display: flex; flex-direction: column; gap: 0.5rem; text-align: left;">
+          <label for="form-name" style="font-size: 0.9rem; color: var(--text-muted);">Nome Completo</label>
+          <input type="text" id="form-name" required style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.02);" placeholder="Seu nome">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem; text-align: left;">
+          <label for="form-email" style="font-size: 0.9rem; color: var(--text-muted);">E-mail</label>
+          <input type="email" id="form-email" required style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.02);" placeholder="seuemail@provedor.com">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem; text-align: left;">
+          <label for="form-society" style="font-size: 0.9rem; color: var(--text-muted);">Escolha uma Sociedade</label>
+          <select id="form-society" required style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-glass); background: #0A0F0D; color: var(--text-light);">
+            <option value="YFC">YF Cerrado</option>
+            <option value="YFA">YF Amazon</option>
+            <option value="YFAR">YF Atlantic Rainforest</option>
+            <option value="NEW">Fundar uma nova sociedade</option>
+          </select>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem; text-align: left;">
+          <label for="form-message" style="font-size: 0.9rem; color: var(--text-muted);">Por que quer se juntar a nós?</label>
+          <textarea id="form-message" rows="3" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.02);" placeholder="Conte-nos sobre você..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top: 1rem; width: 100%;" id="submit-signup-btn">Enviar Inscrição</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- EVENTS SECTION -->
+  <section class="section-padding" id="events">
+    <div class="container">
+      <h2 class="section-title">Eventos Recentes & Futuros</h2>
+      <p class="section-subtitle" id="events-intro-text">
+        This section is where our community comes together. Here, members can stay updated on all Youth for the Environment events, from online global meetings and climate discussions to local activities, campaigns, workshops, and reforestation actions happening in different regions. Whether virtual or in-person, our events are designed to connect young people, encourage collaboration, and turn environmental awareness into real action.
+      </p>
+
+      <div class="events-grid" id="events-grid">
+        <!-- Eventos serão gerados dinamicamente via JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- DONATIONS SECTION -->
+  <section class="section-padding" id="donations">
+    <div class="container">
+      <h2 class="section-title">Faça uma Doação</h2>
+      <p class="section-subtitle">Apoie nossa causa ambiental e ajude a plantar o futuro.</p>
+
+      <div class="glass-card donation-box">
+        <p id="donation-description-text" style="color: var(--text-muted); text-align: center; font-size: 1.05rem;">
+          Every contribution helps us grow our impact. By donating to Youth for the Environment, you support reforestation projects, environmental education, local campaigns, and youth-led climate initiatives around the world.
+        </p>
+        
+        <h4 style="font-family: var(--font-headings); font-size: 1.3rem; text-align: center;">Plant a Tree - Selecione o Valor da Doação</h4>
+        
+        <div class="donation-grid" id="donation-presets">
+          <button class="donation-option active" data-amount="3">$3</button>
+          <button class="donation-option" data-amount="5">$5</button>
+          <button class="donation-option" data-amount="10">$10</button>
+          <button class="donation-option" data-amount="custom">Outro</button>
+        </div>
+
+        <div class="custom-donation-input" id="custom-donation-wrapper" style="display: none;">
+          <span>$</span>
+          <input type="number" id="custom-amount-input" min="1" placeholder="Insira o valor personalizado">
+        </div>
+
+        <button class="btn btn-primary" id="btn-donate-paypal" style="width: 100%; font-size: 1.1rem; padding: 1rem 0;">Apoiar via PayPal</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTNERS & CONTACT SECTION -->
+  <section class="section-padding" id="partners">
+    <div class="container">
+      <h2 class="section-title">Parcerias & Apoio</h2>
+      <p class="section-subtitle">Trabalhamos em conjunto com organizações que acreditam na mudança sustentável.</p>
+      
+      <div class="partners-container" id="partners-list">
+        <!-- Placeholders para parcerias Maple Bear Goiânia e SEMAD -->
+        <div class="partner-placeholder" id="partner-maple-bear">Maple Bear Goiânia</div>
+        <div class="partner-placeholder" id="partner-semad">SEMAD</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo">
+            <img src="Logos/YFE.jpg" alt="YFE Logo">
+            <span class="logo-text">YFE</span>
+          </div>
+          <p>Youth for the Environment é uma rede global de jovens em defesa do meio ambiente, combatendo as mudanças climáticas de forma ativa nos ecossistemas locais.</p>
+        </div>
+        
+        <div>
+          <h4 class="footer-title">Links Rápidos</h4>
+          <ul class="footer-links">
+            <li><a href="#about">Sobre Nós</a></li>
+            <li><a href="#societies">Sociedades</a></li>
+            <li><a href="#map">Mapa de Atuação</a></li>
+            <li><a href="#join">Inscreva-se</a></li>
+            <li><a href="#donations">Doações</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h4 class="footer-title">Contato & Redes</h4>
+          <ul class="footer-links">
+            <li>Instagram: <a href="https://www.instagram.com/youthforenvironmentorg?igsh=a2Y4cmY1eTV2d2tx" target="_blank" rel="noopener noreferrer" style="color: var(--accent-neon); word-break: break-all;" id="footer-instagram">@youthforenvironmentorg</a></li>
+            <li>E-mail: <a href="mailto:contato@youthforenvironment.org" id="footer-email">contato@youthforenvironment.org</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 Youth for the Environment (YFE). Todos os direitos reservados.</p>
+        <p>Desenvolvido com carinho para o planeta 🌍</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
