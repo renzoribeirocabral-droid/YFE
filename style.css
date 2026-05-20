@@ -649,16 +649,19 @@ header.scrolled .nav-container {
   display: block;
 }
 
-.map-svg path {
+.map-svg path,
+.map-svg polygon,
+.map-svg .state {
   fill: #E8ECE9;                  /* Light matte gray-green for unselected areas */
   stroke: #FFFFFF;
   stroke-width: 0.8;
   transition: var(--transition-smooth);
-  cursor: pointer;
+  cursor: default;
 }
 
 .map-svg path:hover,
-.map-svg polygon:hover {
+.map-svg polygon:hover,
+.map-svg .state:hover {
   fill: #D8E2D9;
 }
 

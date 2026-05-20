@@ -196,6 +196,13 @@ async function loadInteractiveMap() {
 
     // 3. Injeta e alinha os estados do Brasil
     const brazilDoc = parser.parseFromString(brazilRes, "image/svg+xml");
+    
+    // Remove style tag to avoid conflicts (like orange hover states)
+    const styleEl = brazilDoc.querySelector("style");
+    if (styleEl) {
+      styleEl.remove();
+    }
+
     const brazilSvg = brazilDoc.querySelector("svg");
     
     // Pega o caminho original do Brasil no mapa mundi
@@ -216,9 +223,9 @@ async function loadInteractiveMap() {
     // Move os caminhos (estados) do SVG do Brasil para o novo grupo
     const states = brazilDoc.querySelectorAll(".state");
     states.forEach(state => {
-      // Adiciona classe e borda
-      state.setAttribute("stroke", "#B5BFB9");
-      state.setAttribute("stroke-width", "0.5");
+      // Adiciona classe e borda (ajustado para branco como os outros países)
+      state.setAttribute("stroke", "#FFFFFF");
+      state.setAttribute("stroke-width", "0.8");
       
       // Verifica se o estado é ativo para destacar
       const stateId = `BR-${state.id}`;
