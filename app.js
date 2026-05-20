@@ -47,9 +47,7 @@ const DEFAULT_DATA = {
   ],
   map: {
     activeRegions: {
-      "BR-GO": { actions: 12, area: "Cerrado - Goiânia e Entorno" },
-      "BR-AM": { actions: 8, area: "Amazônia - Bacia do Rio Negro" },
-      "BR-SP": { actions: 15, area: "Mata Atlântica - Corredores Verdes" }
+      "BR-GO": { actions: 12, area: "Cerrado - Goiânia e Entorno" }
     }
   }
 };
@@ -169,11 +167,21 @@ async function loadInteractiveMap() {
   if (!mapContainer) return;
 
   try {
-    // 1. Carrega os dois SVGs
-    const [worldRes, brazilRes] = await Promise.all([
-      fetch("world-map.svg").then(r => r.text()),
-      fetch("brazil-states.svg").then(r => r.text())
-    ]);
+    let worldRes, brazilRes;
+    
+    // Check if map data is pre-loaded to prevent CORS issues (e.g. running via file://)
+    if (typeof MAP_DATA !== "undefined") {
+      worldRes = MAP_DATA.WORLD_MAP_SVG;
+      brazilRes = MAP_DATA.BRAZIL_STATES_SVG;
+    } else {
+      // Fallback to fetch if MAP_DATA is not defined
+      const [wText, bText] = await Promise.all([
+        fetch("world-map.svg").then(r => r.text()),
+        fetch("brazil-states.svg").then(r => r.text())
+      ]);
+      worldRes = wText;
+      brazilRes = bText;
+    }
 
     // Limpa o container
     mapContainer.innerHTML = "";
@@ -241,7 +249,7 @@ async function loadInteractiveMap() {
 
 function setupMapInteractivity() {
   const tooltip = document.getElementById("map-tooltip");
-  const activeElements = document.querySelectorAll(".map-svg .active-region, .map-svg path");
+  const activeElements = document.querySelectorAll(".map-svg .active-region, .map-svg path, .map-svg polygon");
 
   activeElements.forEach(el => {
     // Só adiciona efeito interativo nos estados demarcados como ativos ou em países que queiramos

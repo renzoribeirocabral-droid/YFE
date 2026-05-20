@@ -657,16 +657,18 @@ header.scrolled .nav-container {
   cursor: pointer;
 }
 
-.map-svg path:hover {
+.map-svg path:hover,
+.map-svg polygon:hover {
   fill: #D8E2D9;
 }
 
-.map-svg path.active-region {
+.map-svg .active-region {
   fill: var(--yfe-green) !important;
   opacity: 0.85;
+  cursor: pointer;
 }
 
-.map-svg path.active-region:hover {
+.map-svg .active-region:hover {
   opacity: 1;
 }
 
