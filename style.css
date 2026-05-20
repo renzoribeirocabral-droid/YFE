@@ -434,6 +434,10 @@ header.scrolled .nav-container {
   opacity: 0;
   transform: translateY(30px);
   animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .hero-badge {
@@ -448,6 +452,7 @@ header.scrolled .nav-container {
   letter-spacing: 2px;
   border: 1px solid rgba(141, 181, 33, 0.2);
   margin-bottom: 2rem;
+  text-align: center;
 }
 
 .hero-title {
@@ -458,6 +463,8 @@ header.scrolled .nav-container {
   margin-bottom: 2rem;
   letter-spacing: -2px;
   color: #FFF;
+  text-align: center;
+  width: 100%;
 }
 
 .hero-title span {
@@ -475,12 +482,16 @@ header.scrolled .nav-container {
   max-width: 720px;
   margin-left: auto;
   margin-right: auto;
+  text-align: center;
+  width: 100%;
 }
 
 .hero-cta {
   display: flex;
   gap: 1.5rem;
   justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 /* --- STATS BAR SECTION (Logo green/cream accent) --- */
