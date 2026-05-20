@@ -424,7 +424,7 @@ header.scrolled .nav-container {
 }
 
 .hero-bg:not([style*="url"]) {
-  background-image: linear-gradient(rgba(7, 11, 2, 0.65), rgba(7, 11, 2, 0.95)), url('Logos/YFE.jpg');
+  background-image: linear-gradient(rgba(7, 11, 2, 0.65), rgba(7, 11, 2, 0.95)), url('hero.image.jpg');
 }
 
 .hero-content {
