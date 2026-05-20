@@ -349,7 +349,7 @@ function setupHeaderScroll() {
 function setupBurgerMenu() {
   const burger = document.getElementById("burger-menu");
   const menu = document.getElementById("nav-menu");
-  const links = document.querySelectorAll(".nav-link");
+  const links = document.querySelectorAll(".nav-link, #header-donate-btn");
 
   burger.addEventListener("click", () => {
     menu.classList.toggle("open");
