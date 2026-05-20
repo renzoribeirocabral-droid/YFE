@@ -118,7 +118,7 @@ function renderEvents() {
   if (!grid) return;
 
   grid.innerHTML = siteData.events.map(event => `
-    <div class="glass-card event-card">
+    <div class="event-card">
       <div>
         <div class="event-date">${event.date}</div>
         <h3 class="event-title">${event.title}</h3>
