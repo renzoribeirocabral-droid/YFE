@@ -5,7 +5,6 @@
   /* Colors - Light Matte Theme */
   --yfe-green: #8DB521;          /* Leaf Green from YFE logo */
   --yfe-cream: #EFFFBE;          /* Light Cream Green from YFE logo */
-  --yfe-orange: #BF7421;         /* Cerrado Orange from YFC logo */
   
   --bg-primary: #FAFBF9;         /* Very soft off-white/warm cream base */
   --bg-secondary: #FFFFFF;       /* Pure white for panels and cards */
@@ -165,12 +164,12 @@ h1, h2, h3, h4 {
 }
 
 .btn-gold {
-  background-color: var(--yfe-orange);
+  background-color: var(--yfe-green);
   color: var(--text-light);
 }
 
 .btn-gold:hover {
-  background-color: #A36018;
+  background-color: #7CA01B;
   transform: translateY(-1px);
 }
 
