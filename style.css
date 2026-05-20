@@ -415,7 +415,7 @@ header.scrolled .nav-container {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: linear-gradient(rgba(7, 11, 2, 0.6), rgba(7, 11, 2, 0.85)), url('content/drive-cache/YFE/hero-image.jpg');
+  background-image: linear-gradient(rgba(7, 11, 2, 0.6), rgba(7, 11, 2, 0.85)), url('hero.image.jpg');
   background-size: cover;
   background-position: center;
   z-index: -2;
@@ -757,6 +757,7 @@ header.scrolled .nav-container {
   font-size: 1.1rem;
   line-height: 1.8;
   color: var(--text-muted);
+  text-align: center;
 }
 
 .tab-pane.active {
@@ -866,6 +867,17 @@ header.scrolled .nav-container {
   height: 100%;
   border-color: var(--border-glass);
   background: rgba(141, 181, 33, 0.03);
+  text-align: center;
+  align-items: center;
+  padding: 0;
+}
+
+.event-card > div:first-child {
+  padding: 2.5rem 2.5rem 0 2.5rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .event-card:hover {
@@ -879,6 +891,7 @@ header.scrolled .nav-container {
   margin-bottom: 1rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
+  text-align: center;
 }
 
 .event-title {
@@ -887,6 +900,7 @@ header.scrolled .nav-container {
   font-weight: 700;
   margin-bottom: 1rem;
   line-height: 1.3;
+  text-align: center;
 }
 
 .event-description {
@@ -894,16 +908,19 @@ header.scrolled .nav-container {
   font-size: 0.98rem;
   margin-bottom: 2rem;
   line-height: 1.6;
+  text-align: center;
 }
 
 .event-footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 1.5rem;
   align-items: center;
   border-top: 1px solid var(--border-glass);
-  padding-top: 1.2rem;
+  padding: 1.2rem 2.5rem;
   font-size: 0.9rem;
   color: var(--text-muted);
+  width: 100%;
 }
 
 .event-tag {
@@ -1029,10 +1046,22 @@ footer {
   margin-bottom: 4rem;
 }
 
+.footer-grid > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.footer-brand .logo {
+  justify-content: center;
+}
+
 .footer-brand p {
   margin-top: 1.2rem;
   max-width: 450px;
   line-height: 1.7;
+  text-align: center;
 }
 
 .footer-title {
@@ -1041,6 +1070,7 @@ footer {
   font-weight: 700;
   color: var(--text-light);
   margin-bottom: 1.5rem;
+  text-align: center;
 }
 
 .footer-links {
