@@ -8,46 +8,46 @@ const DEFAULT_DATA = {
   societies: {
     YFC: {
       name: "Youth for Cerrado",
-      about: "A Youth for Cerrado atua diretamente na preservação da savana mais rica em biodiversidade do mundo. Focamos na conscientização da escassez de água local, contenção de queimadas e plantio de espécies nativas arbóreas do bioma Cerrado.",
-      achievements: "Mais de 10.000 mudas plantadas, 5 workshops sobre recursos hídricos realizados em escolas locais de Goiânia, e participação ativa em discussões estaduais de políticas ambientais."
+      about: "Youth for Cerrado acts directly in the preservation of the most biodiverse savanna in the world. We focus on raising awareness about local water scarcity, wildfire prevention, and planting tree species native to the Cerrado biome.",
+      achievements: "Over 10,000 seedlings planted, 5 workshops on water resources held in local schools in Goiânia, and active participation in state-level environmental policy discussions."
     },
     YFA: {
       name: "Youth for Amazon",
-      about: "A Youth for Amazon atua no coração da maior floresta tropical do mundo, focando no monitoramento do desmatamento, restauração florestal em áreas degradadas e apoio a projetos comunitários sustentáveis de povos nativos.",
-      achievements: "Restauração de 15 hectares de áreas degradadas ao longo de rios, estabelecimento de redes de sementes comunitárias, e campanhas internacionais de conscientização sobre as ameaças ao bioma."
+      about: "Youth for Amazon operates in the heart of the largest rainforest in the world, focusing on deforestation monitoring, forest restoration in degraded areas, and supporting sustainable community projects for indigenous peoples.",
+      achievements: "Restoration of 15 hectares of degraded areas along rivers, establishing community seed networks, and international awareness campaigns about threats to the biome."
     },
     YFAR: {
       name: "Youth for Atlantic Rainforest",
-      about: "A Youth for Atlantic Rainforest atua na recuperação de um dos biomas mais devastados e fragmentados do Brasil. Nosso foco é conectar fragmentos florestais urbanos e rurais através do plantio de corredores ecológicos.",
-      achievements: "Criação de 3 novos corredores ecológicos em parcerias privadas, catalogação de fauna local em áreas recuperadas, e engajamento de mais de 2.000 voluntários urbanos nas ações."
+      about: "Youth for Atlantic Rainforest works on recovering one of the most devastated and fragmented biomes in Brazil. Our focus is to connect urban and rural forest fragments by planting ecological corridors.",
+      achievements: "Creation of 3 new ecological corridors in private partnerships, cataloging local fauna in recovered areas, and engaging more than 2,000 urban volunteers in our actions."
     }
   },
   events: [
     {
-      title: "Encontro Global Online de Jovens pelo Clima",
-      description: "Discussão internacional sobre o papel da governança jovem nas políticas de clima antes da próxima conferência global do clima.",
-      date: "25 de Julho, 2026",
+      title: "Global Youth Climate Online Meeting",
+      description: "International discussion on the role of youth governance in climate policies before the next global climate conference.",
+      date: "July 25, 2026",
       type: "Virtual",
       location: "Zoom"
     },
     {
-      title: "Mutirão de Reflorestamento - Cerrado Limpo",
-      description: "Ação de plantio coletivo de espécies nativas no Cerrado para recuperar áreas degradadas por queimadas.",
-      date: "12 de Agosto, 2026",
-      type: "Presencial",
+      title: "Reforestation Drive - Clean Cerrado",
+      description: "Collective planting action of native species in the Cerrado to restore areas degraded by wildfires.",
+      date: "August 12, 2026",
+      type: "In-Person",
       location: "Goiânia, GO"
     },
     {
-      title: "Workshop de Advocacia Climática",
-      description: "Capacitação prática para jovens sobre como influenciar tomadores de decisão e criar políticas públicas ecológicas locais.",
-      date: "05 de Setembro, 2026",
+      title: "Climate Advocacy Workshop",
+      description: "Practical training for young people on how to influence decision-makers and create local ecological public policies.",
+      date: "September 5, 2026",
       type: "Virtual",
       location: "Google Meet"
     }
   ],
   map: {
     activeRegions: {
-      "BR-GO": { actions: 12, area: "Cerrado - Goiânia e Entorno" }
+      "BR-GO": { actions: 12, area: "Cerrado - Goiânia and surrounding area" }
     }
   }
 };
@@ -60,9 +60,9 @@ let activeTab = "about";
 // --- DYNAMIC LOADING SYSTEM ---
 async function fetchDriveData() {
   try {
-    // Tenta carregar os dados locais gerados pelo script de sincronização do Drive.
-    // Como os arquivos são gerados dinamicamente na pasta content/drive-cache/,
-    // tentamos buscar e fazer o merge para atualizar o site em tempo real.
+    // Attempt to load local data generated by the Drive sync script.
+    // Since files are dynamically generated in the content/drive-cache/ folder,
+    // we attempt to fetch and merge them to update the site in real-time.
     
     const responses = await Promise.allSettled([
       fetch("content/drive-cache/YFE/about-text.json").then(r => r.json()),
@@ -76,12 +76,12 @@ async function fetchDriveData() {
     if (responses[2].status === "fulfilled") siteData.events = responses[2].value;
     if (responses[3].status === "fulfilled") siteData.map = responses[3].value;
 
-    console.log("Dados do Google Drive carregados com sucesso!");
+    console.log("Google Drive data successfully loaded!");
   } catch (error) {
-    console.warn("Google Drive não sincronizado ainda ou arquivos em branco. Usando dados padrão da Youth for the Environment.", error);
+    console.warn("Google Drive not synced yet or blank files. Using default Youth for the Environment data.", error);
   }
   
-  // Atualiza as seções após o carregamento
+  // Update sections after loading
   renderAboutUs();
   renderSocieties();
   renderEvents();
@@ -194,7 +194,7 @@ async function loadInteractiveMap() {
     worldSvg.setAttribute("id", "interactive-world-map");
     mapContainer.appendChild(worldSvg);
 
-    // 3. Injeta e alinha os estados do Brasil
+    // 3. Inject and align Brazil states
     const brazilDoc = parser.parseFromString(brazilRes, "image/svg+xml");
     
     // Remove style tag to avoid conflicts (like orange hover states)
@@ -205,29 +205,29 @@ async function loadInteractiveMap() {
 
     const brazilSvg = brazilDoc.querySelector("svg");
     
-    // Pega o caminho original do Brasil no mapa mundi
+    // Get the original Brazil path in the world map
     const originalBrPath = worldSvg.querySelector("#br");
     if (!originalBrPath) {
-      console.error("Path com id 'br' não encontrado no mapa mundi.");
+      console.error("Path with id 'br' not found in the world map.");
       return;
     }
 
-    // Calcula o bounding box original do Brasil no mapa mundi
-    // Nota: Como o SVG foi adicionado ao DOM, getBBox funciona perfeitamente
+    // Calculate the original bounding box of Brazil in the world map
+    // Note: Since the SVG has been added to the DOM, getBBox works perfectly
     const bbox = originalBrPath.getBBox();
 
-    // Cria um grupo para os estados do Brasil
+    // Create a group for the states of Brazil
     const brGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
     brGroup.setAttribute("id", "brazil-states-group");
 
-    // Move os caminhos (estados) do SVG do Brasil para o novo grupo
+    // Move the paths (states) of the Brazil SVG to the new group
     const states = brazilDoc.querySelectorAll(".state");
     states.forEach(state => {
-      // Adiciona classe e borda (ajustado para branco como os outros países)
+      // Add class and border (adjusted to white like other countries)
       state.setAttribute("stroke", "#FFFFFF");
       state.setAttribute("stroke-width", "0.8");
       
-      // Verifica se o estado é ativo para destacar
+      // Check if the state is active to highlight it
       const stateId = `BR-${state.id}`;
       if (siteData.map.activeRegions[stateId]) {
         state.setAttribute("class", "state active-region");
@@ -236,21 +236,21 @@ async function loadInteractiveMap() {
       brGroup.appendChild(state.cloneNode(true));
     });
 
-    // Alinha os estados do Brasil com a escala e tradução exatas do path original
-    // A viewBox do mapa do Brasil é "0 0 353.845 367.766"
+    // Align Brazil states with the exact scale and translation of the original path
+    // The viewBox of the Brazil map is "0 0 353.845 367.766"
     const scaleX = bbox.width / 353.845;
     const scaleY = bbox.height / 367.766;
     brGroup.setAttribute("transform", `translate(${bbox.x}, ${bbox.y}) scale(${scaleX}, ${scaleY})`);
 
-    // Substitui o path original do Brasil pelo grupo de estados
+    // Replace the original Brazil path with the states group
     originalBrPath.parentNode.replaceChild(brGroup, originalBrPath);
 
-    // 4. Configura interatividade do mapa (Tooltip / Hover)
+    // 4. Configure map interactivity (Tooltip / Hover)
     setupMapInteractivity();
 
   } catch (error) {
-    console.error("Erro ao carregar o mapa interativo:", error);
-    document.getElementById("map-loading").textContent = "Erro ao carregar o mapa interativo. Verifique as configurações.";
+    console.error("Error loading the interactive map:", error);
+    document.getElementById("map-loading").textContent = "Error loading the interactive map. Please check your settings.";
   }
 }
 
@@ -259,7 +259,7 @@ function setupMapInteractivity() {
   const activeElements = document.querySelectorAll(".map-svg .active-region, .map-svg path, .map-svg polygon");
 
   activeElements.forEach(el => {
-    // Só adiciona efeito interativo nos estados demarcados como ativos ou em países que queiramos
+    // Only add interactive effects to regions marked as active
     const regionId = el.id ? (el.id.length === 2 ? `BR-${el.id}` : el.id) : null;
     const regionData = siteData.map.activeRegions[regionId];
 
@@ -269,9 +269,9 @@ function setupMapInteractivity() {
       el.addEventListener("mouseenter", (e) => {
         tooltip.style.opacity = "1";
         tooltip.innerHTML = `
-          <strong>${el.getAttribute("id") || "Região"}</strong><br/>
-          📍 Foco: ${regionData.area}<br/>
-          🌱 Ações: ${regionData.actions}
+          <strong>${el.getAttribute("id") || "Region"}</strong><br/>
+          📍 Focus: ${regionData.area}<br/>
+          🌱 Actions: ${regionData.actions}
         `;
       });
 
@@ -322,13 +322,13 @@ function setupDonationSystem() {
     if (selectedAmount === "custom") {
       finalAmount = customInput.value;
       if (!finalAmount || finalAmount <= 0) {
-        alert("Por favor, insira um valor válido para doação.");
+        alert("Please enter a valid donation amount.");
         return;
       }
     }
 
     // PayPal integration simulation
-    alert(`Redirecionando para o PayPal para realizar a doação de $${finalAmount}... (Modo de teste)`);
+    alert(`Redirecting to PayPal to complete your donation of $${finalAmount}... (Test Mode)`);
     window.open(`https://www.paypal.com/donate/?business=renzoribeirocabral@gmail.com&amount=${finalAmount}&currency_code=USD`, "_blank");
   });
 }
@@ -387,7 +387,7 @@ function setupModal() {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const name = document.getElementById("form-name").value;
-    alert(`Obrigado pela inscrição, ${name}! Nós entraremos em contato em breve.`);
+    alert(`Thank you for signing up, ${name}! We will get in touch with you shortly.`);
     modal.style.display = "none";
     form.reset();
   });
@@ -401,9 +401,9 @@ document.addEventListener("DOMContentLoaded", () => {
   setupDonationSystem();
   setupModal();
   
-  // Carrega os dados assincronamente
+  // Load data asynchronously
   fetchDriveData();
   
-  // Carrega o mapa interativo
+  // Load interactive map
   loadInteractiveMap();
 });
