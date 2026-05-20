@@ -1,7 +1,7 @@
 // --- DEFAULT / FALLBACK DATA (Based on outline) ---
 const DEFAULT_DATA = {
   about: {
-    text1: "Youth for the Environment is a global youth-led movement that began in Brazil with the mission of empowering young people to protect their local biomes while participating in environmental governance and climate action.",
+    text1: "Youth for Environment is a global youth-led movement that began in Brazil with the mission of empowering young people to protect their local biomes while participating in environmental governance and climate action.",
     text2: "Through reforestation initiatives, awareness campaigns, and youth-led policy discussions, we connect local environmental challenges to the global climate crisis.",
     text3: "We believe the generation most affected by climate change must also help shape the decisions surrounding it. That’s why we work to ensure young people are not just future leaders, but active voices in protecting ecosystems, influencing environmental policy, and building a more sustainable future: starting within their own communities."
   },
@@ -78,7 +78,7 @@ async function fetchDriveData() {
 
     console.log("Google Drive data successfully loaded!");
   } catch (error) {
-    console.warn("Google Drive not synced yet or blank files. Using default Youth for the Environment data.", error);
+    console.warn("Google Drive not synced yet or blank files. Using default Youth for Environment data.", error);
   }
   
   // Update sections after loading
