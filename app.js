@@ -7,18 +7,18 @@ const DEFAULT_DATA = {
   },
   societies: {
     YFC: {
-      name: "YF Cerrado",
-      about: "A YF Cerrado atua diretamente na preservação da savana mais rica em biodiversidade do mundo. Focamos na conscientização da escassez de água local, contenção de queimadas e plantio de espécies nativas arbóreas do bioma Cerrado.",
+      name: "Youth for Cerrado",
+      about: "A Youth for Cerrado atua diretamente na preservação da savana mais rica em biodiversidade do mundo. Focamos na conscientização da escassez de água local, contenção de queimadas e plantio de espécies nativas arbóreas do bioma Cerrado.",
       achievements: "Mais de 10.000 mudas plantadas, 5 workshops sobre recursos hídricos realizados em escolas locais de Goiânia, e participação ativa em discussões estaduais de políticas ambientais."
     },
     YFA: {
-      name: "YF Amazon",
-      about: "A YF Amazon atua no coração da maior floresta tropical do mundo, focando no monitoramento do desmatamento, restauração florestal em áreas degradadas e apoio a projetos comunitários sustentáveis de povos nativos.",
+      name: "Youth for Amazon",
+      about: "A Youth for Amazon atua no coração da maior floresta tropical do mundo, focando no monitoramento do desmatamento, restauração florestal em áreas degradadas e apoio a projetos comunitários sustentáveis de povos nativos.",
       achievements: "Restauração de 15 hectares de áreas degradadas ao longo de rios, estabelecimento de redes de sementes comunitárias, e campanhas internacionais de conscientização sobre as ameaças ao bioma."
     },
     YFAR: {
-      name: "YF Atlantic Rainforest",
-      about: "A YF Atlantic Rainforest atua na recuperação de um dos biomas mais devastados e fragmentados do Brasil. Nosso foco é conectar fragmentos florestais urbanos e rurais através do plantio de corredores ecológicos.",
+      name: "Youth for Atlantic Rainforest",
+      about: "A Youth for Atlantic Rainforest atua na recuperação de um dos biomas mais devastados e fragmentados do Brasil. Nosso foco é conectar fragmentos florestais urbanos e rurais através do plantio de corredores ecológicos.",
       achievements: "Criação de 3 novos corredores ecológicos em parcerias privadas, catalogação de fauna local em áreas recuperadas, e engajamento de mais de 2.000 voluntários urbanos nas ações."
     }
   },
@@ -80,7 +80,7 @@ async function fetchDriveData() {
 
     console.log("Dados do Google Drive carregados com sucesso!");
   } catch (error) {
-    console.warn("Google Drive não sincronizado ainda ou arquivos em branco. Usando dados padrão da YFE.", error);
+    console.warn("Google Drive não sincronizado ainda ou arquivos em branco. Usando dados padrão da Youth for the Environment.", error);
   }
   
   // Atualiza as seções após o carregamento
