@@ -2,26 +2,34 @@
 
 /* --- DESIGN SYSTEM TOKENS --- */
 :root {
-  /* Colors - Dark Theme (Forest & Neon) */
-  --primary-forest: #0B3C20;
-  --primary-light: #165B33;
-  --accent-neon: #39FF14;
-  --accent-emerald: #00E676;
-  --accent-gold: #FCAF17;
-  --bg-dark: #070B09;
-  --bg-card: rgba(22, 91, 51, 0.08);
-  --bg-card-hover: rgba(22, 91, 51, 0.16);
-  --text-light: #F4F9F5;
-  --text-muted: #A8BBA2;
-  --border-glass: rgba(255, 255, 255, 0.07);
+  /* Colors - YFE Brand Palette (Extracted from Logos/YFE.jpg) */
+  --yfe-green: #8DB521;        /* Dominant brand leaf green */
+  --yfe-green-bright: #A5D625; /* Brighter leaf green for hovers */
+  --yfe-green-dark: #3F520F;   /* Deep leaf green for text/borders */
+  --yfe-cream: #EFFFBE;        /* Light cream-green from YFE logo */
+  --yfe-cream-light: #FAFDFA;  /* Off-white background with a hint of cream */
   
-  /* Colors - Light Theme (Contrast) */
+  /* YFC Brand Palette (Extracted from Logos/YFC.png) */
+  --yfc-orange: #BF7421;       /* Cerrado warm orange/ochre */
+  --yfc-orange-dark: #8D5111;  /* Deep Cerrado orange */
+  
+  /* Layout Colors - Dark Theme (Forest/Olive) */
+  --primary-forest: #172205;   /* Very deep olive forest green */
+  --primary-light: #2B3D0D;    /* Mid-tone brand green */
+  --bg-dark: #070B02;          /* Near black olive-green background */
+  --bg-card: rgba(141, 181, 33, 0.06); /* Soft translucent logo green */
+  --bg-card-hover: rgba(141, 181, 33, 0.12);
+  --text-light: #F4FAF0;       /* Crisp light green-white */
+  --text-muted: #B4C4B0;       /* Muted sage */
+  --border-glass: rgba(141, 181, 33, 0.12);
+  
+  /* Layout Colors - Light Theme (Contrast) */
   --bg-light: #FFFFFF;
-  --bg-gray: #F5F7F5;
-  --text-dark: #1D2A20;
-  --text-muted-dark: #506A57;
-  --border-light: rgba(11, 60, 32, 0.1);
-  --bg-card-light: rgba(11, 60, 32, 0.03);
+  --bg-gray: #F6F9F2;          /* Light cream-sage background */
+  --text-dark: #1E2812;        /* Dark olive text */
+  --text-muted-dark: #58664D;  /* Muted olive text */
+  --border-light: rgba(141, 181, 33, 0.12);
+  --bg-card-light: rgba(141, 181, 33, 0.04);
   
   /* Fonts */
   --font-headings: 'Outfit', sans-serif;
@@ -33,7 +41,7 @@
   
   /* Blurs & Shadows */
   --blur-glass: 12px;
-  --shadow-premium: 0 20px 40px rgba(0, 0, 0, 0.15);
+  --shadow-premium: 0 20px 40px rgba(7, 11, 2, 0.15);
 }
 
 /* --- RESET & BASICS --- */
@@ -144,7 +152,7 @@ ul {
   margin: 0 auto 5rem auto;
 }
 
-/* Badges styling (Inspirado no visual limpo de tags das imagens) */
+/* Badges styling */
 .center-badge-wrapper {
   display: flex;
   justify-content: center;
@@ -153,21 +161,21 @@ ul {
 
 .section-badge {
   display: inline-block;
-  background-color: rgba(22, 91, 51, 0.08);
-  color: var(--primary-light);
+  background-color: rgba(141, 181, 33, 0.08);
+  color: var(--yfe-green-dark);
   padding: 0.4rem 1.2rem;
   border-radius: 50px;
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 2px;
-  border: 1px solid rgba(22, 91, 51, 0.12);
+  border: 1px solid rgba(141, 181, 33, 0.15);
 }
 
 .section-badge.badge-light {
-  background-color: rgba(57, 255, 20, 0.08);
-  color: var(--accent-emerald);
-  border-color: rgba(57, 255, 20, 0.15);
+  background-color: rgba(141, 181, 33, 0.12);
+  color: var(--yfe-green-bright);
+  border-color: rgba(141, 181, 33, 0.2);
 }
 
 /* --- GLASS CARD CLASS --- */
@@ -183,7 +191,7 @@ ul {
 
 .dark-section .glass-card:hover {
   transform: translateY(-5px);
-  border-color: rgba(57, 255, 20, 0.25);
+  border-color: rgba(141, 181, 33, 0.25);
   background: var(--bg-card-hover);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
@@ -204,17 +212,17 @@ ul {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary-light), var(--primary-forest));
-  color: var(--text-light);
-  border: 1px solid rgba(57, 255, 20, 0.2);
-  box-shadow: 0 4px 20px rgba(22, 91, 51, 0.35);
+  background: linear-gradient(135deg, var(--yfe-green), var(--yfe-green-dark));
+  color: #FFFFFF;
+  border: 1px solid rgba(141, 181, 33, 0.25);
+  box-shadow: 0 4px 20px rgba(141, 181, 33, 0.25);
 }
 
 .btn-primary:hover {
-  box-shadow: 0 8px 25px rgba(57, 255, 20, 0.3);
+  box-shadow: 0 8px 25px rgba(141, 181, 33, 0.4);
   transform: translateY(-2px);
-  border-color: var(--accent-neon);
-  color: #fff;
+  border-color: var(--yfe-green-bright);
+  color: #FFF;
 }
 
 .btn-primary::after {
@@ -224,7 +232,7 @@ ul {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, var(--accent-neon), var(--accent-emerald));
+  background: linear-gradient(135deg, var(--yfe-green-bright), var(--yfe-green));
   z-index: -1;
   opacity: 0;
   transition: var(--transition-smooth);
@@ -234,18 +242,19 @@ ul {
   opacity: 0.2;
 }
 
-/* Gold/Yellow button variant (inspirado no botão CTA amarelo da segunda imagem) */
+/* Orange/Gold button variant (Inspired by YFC Cerrado Logo Ochre) */
 .btn-gold {
-  background: linear-gradient(135deg, var(--accent-gold), #E09007);
-  color: #070B09;
-  border: 1px solid rgba(252, 175, 23, 0.2);
-  box-shadow: 0 4px 20px rgba(252, 175, 23, 0.25);
+  background: linear-gradient(135deg, var(--yfc-orange), var(--yfc-orange-dark));
+  color: #FFFFFF;
+  border: 1px solid rgba(191, 116, 33, 0.25);
+  box-shadow: 0 4px 20px rgba(191, 116, 33, 0.25);
 }
 
 .btn-gold:hover {
-  box-shadow: 0 8px 25px rgba(252, 175, 23, 0.4);
+  box-shadow: 0 8px 25px rgba(191, 116, 33, 0.4);
   border-color: #FFF;
-  color: #070B09;
+  color: #FFFFFF;
+  transform: translateY(-2px);
 }
 
 .btn-gold::after {
@@ -262,7 +271,7 @@ ul {
 }
 
 .btn-gold:hover::after {
-  opacity: 0.25;
+  opacity: 0.15;
 }
 
 .btn-secondary {
@@ -273,7 +282,7 @@ ul {
 
 .light-section .btn-secondary {
   border: 1px solid var(--border-light);
-  background: rgba(11, 60, 32, 0.02);
+  background: rgba(141, 181, 33, 0.02);
   color: var(--text-dark);
 }
 
@@ -283,8 +292,8 @@ ul {
 }
 
 .light-section .btn-secondary:hover {
-  background: rgba(11, 60, 32, 0.06);
-  border-color: var(--primary-forest);
+  background: rgba(141, 181, 33, 0.06);
+  border-color: var(--yfe-green-dark);
 }
 
 /* --- HEADER & NAVIGATION --- */
@@ -299,7 +308,7 @@ header {
 }
 
 header.scrolled {
-  background: rgba(7, 11, 9, 0.85);
+  background: rgba(7, 11, 2, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-glass);
@@ -335,7 +344,7 @@ header.scrolled .nav-container {
   font-size: 1.6rem;
   font-weight: 800;
   letter-spacing: 1px;
-  background: linear-gradient(135deg, #FFF, var(--accent-emerald));
+  background: linear-gradient(135deg, #FFF, var(--yfe-green));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -365,7 +374,7 @@ header.scrolled .nav-container {
   left: 0;
   width: 0;
   height: 2px;
-  background: var(--accent-gold);
+  background: var(--yfe-green);
   transition: var(--transition-smooth);
 }
 
@@ -387,7 +396,7 @@ header.scrolled .nav-container {
   transition: var(--transition-smooth);
 }
 
-/* --- HERO SECTION (Inspirado no visual escuro atmosférico da 2ª imagem) --- */
+/* --- HERO SECTION --- */
 .hero {
   position: relative;
   min-height: 100vh;
@@ -396,7 +405,7 @@ header.scrolled .nav-container {
   justify-content: center;
   text-align: center;
   padding-top: 80px;
-  background: radial-gradient(circle at center, rgba(11, 60, 32, 0.25) 0%, rgba(7, 11, 9, 1) 80%);
+  background: radial-gradient(circle at center, rgba(141, 181, 33, 0.2) 0%, rgba(7, 11, 2, 1) 80%);
   overflow: hidden;
 }
 
@@ -406,7 +415,7 @@ header.scrolled .nav-container {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: linear-gradient(rgba(7, 11, 9, 0.65), rgba(7, 11, 9, 0.85)), url('content/drive-cache/YFE/hero-image.jpg');
+  background-image: linear-gradient(rgba(7, 11, 2, 0.6), rgba(7, 11, 2, 0.85)), url('content/drive-cache/YFE/hero-image.jpg');
   background-size: cover;
   background-position: center;
   z-index: -2;
@@ -414,9 +423,8 @@ header.scrolled .nav-container {
   transition: var(--transition-smooth);
 }
 
-/* Fallback local image if drive is empty */
 .hero-bg:not([style*="url"]) {
-  background-image: linear-gradient(rgba(7, 11, 9, 0.65), rgba(7, 11, 9, 0.95)), url('Logos/YFE.jpg');
+  background-image: linear-gradient(rgba(7, 11, 2, 0.65), rgba(7, 11, 2, 0.95)), url('Logos/YFE.jpg');
 }
 
 .hero-content {
@@ -429,15 +437,15 @@ header.scrolled .nav-container {
 
 .hero-badge {
   display: inline-block;
-  background-color: rgba(252, 175, 23, 0.12);
-  color: var(--accent-gold);
+  background-color: rgba(141, 181, 33, 0.12);
+  color: var(--yfe-green);
   padding: 0.5rem 1.4rem;
   border-radius: 50px;
   font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 2px;
-  border: 1px solid rgba(252, 175, 23, 0.2);
+  border: 1px solid rgba(141, 181, 33, 0.2);
   margin-bottom: 2rem;
 }
 
@@ -452,7 +460,7 @@ header.scrolled .nav-container {
 }
 
 .hero-title span {
-  background: linear-gradient(135deg, var(--accent-emerald), var(--accent-neon));
+  background: linear-gradient(135deg, var(--yfe-green), var(--yfe-cream));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: block;
@@ -474,9 +482,9 @@ header.scrolled .nav-container {
   justify-content: center;
 }
 
-/* --- STATS BAR SECTION (Design clean de métricas da primeira imagem) --- */
+/* --- STATS BAR SECTION (Logo green/cream accent) --- */
 .stats-bar {
-  background: linear-gradient(135deg, #09130D, #050806);
+  background: linear-gradient(135deg, #0E1605, #060902);
   border-top: 1px solid var(--border-glass);
   border-bottom: 1px solid var(--border-glass);
   padding: 3rem 0;
@@ -500,7 +508,7 @@ header.scrolled .nav-container {
   font-family: var(--font-headings);
   font-size: 3.5rem;
   font-weight: 800;
-  color: var(--accent-gold);
+  color: var(--yfe-green);
   line-height: 1;
   margin-bottom: 0.5rem;
 }
@@ -519,7 +527,7 @@ header.scrolled .nav-container {
   background-color: var(--border-glass);
 }
 
-/* --- ABOUT US SECTION (Design clean em fundo claro com barras de progresso) --- */
+/* --- ABOUT US SECTION (Light soft cream background) --- */
 .about-grid {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
@@ -529,7 +537,7 @@ header.scrolled .nav-container {
 
 .about-text .highlight-text {
   font-size: 1.3rem;
-  color: var(--primary-forest);
+  color: var(--yfe-green-dark);
   font-weight: 600;
   line-height: 1.6;
   margin-bottom: 2rem;
@@ -541,7 +549,7 @@ header.scrolled .nav-container {
   color: var(--text-muted-dark);
 }
 
-/* Barras de Progresso (Inspiradas no visual da 1ª imagem) */
+/* Barras de Progresso */
 .about-features {
   margin-top: 3rem;
   display: flex;
@@ -569,20 +577,20 @@ header.scrolled .nav-container {
 }
 
 .feature-val {
-  color: var(--primary-light);
+  color: var(--yfe-green-dark);
 }
 
 .progress-bar {
   width: 100%;
   height: 8px;
-  background-color: rgba(11, 60, 32, 0.08);
+  background-color: rgba(141, 181, 33, 0.1);
   border-radius: 10px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--primary-light), var(--accent-emerald));
+  background: linear-gradient(90deg, var(--yfe-green-dark), var(--yfe-green));
   border-radius: 10px;
   transition: width 1s ease-in-out;
 }
@@ -592,7 +600,7 @@ header.scrolled .nav-container {
   position: relative;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 15px 35px rgba(11, 60, 32, 0.12);
+  box-shadow: 0 15px 35px rgba(141, 181, 33, 0.12);
   border: 1px solid var(--border-light);
 }
 
@@ -608,12 +616,12 @@ header.scrolled .nav-container {
   transform: scale(1.03);
 }
 
-/* Badge flutuante sobre imagem (Estilo wind energy da 2ª imagem) */
+/* Badge flutuante sobre imagem */
 .image-badge {
   position: absolute;
   bottom: 2rem;
   left: 2rem;
-  background: rgba(7, 11, 9, 0.9);
+  background: rgba(7, 11, 2, 0.9);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--border-glass);
@@ -630,7 +638,7 @@ header.scrolled .nav-container {
   font-family: var(--font-headings);
   font-size: 2.2rem;
   font-weight: 800;
-  color: var(--accent-neon);
+  color: var(--yfe-green);
   line-height: 1;
 }
 
@@ -643,7 +651,7 @@ header.scrolled .nav-container {
   color: var(--text-muted);
 }
 
-/* --- OUR SOCIETIES SECTION (Fundo Escuro Premium) --- */
+/* --- OUR SOCIETIES SECTION --- */
 .societies-container {
   display: flex;
   flex-direction: column;
@@ -659,7 +667,7 @@ header.scrolled .nav-container {
 }
 
 .society-btn {
-  background: rgba(22, 91, 51, 0.04);
+  background: rgba(141, 181, 33, 0.03);
   border: 1px solid var(--border-glass);
   padding: 1.2rem 2.2rem;
   border-radius: 16px;
@@ -687,8 +695,8 @@ header.scrolled .nav-container {
 }
 
 .society-btn:hover, .society-btn.active {
-  background: rgba(22, 91, 51, 0.16);
-  border-color: var(--accent-neon);
+  background: rgba(141, 181, 33, 0.12);
+  border-color: var(--yfe-green);
   transform: translateY(-4px);
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
@@ -727,8 +735,8 @@ header.scrolled .nav-container {
 }
 
 .tab-link.active {
-  color: var(--accent-neon);
-  border-bottom-color: var(--accent-neon);
+  color: var(--yfe-green);
+  border-bottom-color: var(--yfe-green);
 }
 
 .tab-pane {
@@ -743,7 +751,7 @@ header.scrolled .nav-container {
   display: block;
 }
 
-/* --- MAP SECTION (Fundo Claro / Cinza) --- */
+/* --- MAP SECTION (Fundo Claro / Cinza-Cream) --- */
 .map-wrapper {
   display: flex;
   flex-direction: column;
@@ -759,45 +767,44 @@ header.scrolled .nav-container {
   border: 1px solid var(--border-light);
   border-radius: 20px;
   padding: 2.5rem;
-  box-shadow: 0 15px 35px rgba(11, 60, 32, 0.05);
+  box-shadow: 0 15px 35px rgba(141, 181, 33, 0.04);
   position: relative;
 }
 
 .map-svg {
   width: 100%;
   height: auto;
-  fill: #E2E8E4;
-  stroke: #A8B2AC;
+  fill: #E5EAE3;
+  stroke: #A5B0A3;
   stroke-width: 0.8;
   stroke-linejoin: round;
 }
 
-/* Customização dos contornos internos do Brasil para ficarem em cinza levemente mais escuro */
 .map-svg #brazil-states-group path {
-  fill: #D2DCD6;
-  stroke: #B5BFB9;
+  fill: #D6DED4;
+  stroke: #B5BFB2;
   stroke-width: 0.5;
 }
 
 /* Destaque das regiões ativas */
 .map-svg .active-region, .map-svg #brazil-states-group path.active-region {
-  fill: rgba(0, 230, 118, 0.15) !important;
-  stroke: var(--primary-light) !important;
+  fill: rgba(141, 181, 33, 0.15) !important;
+  stroke: var(--yfe-green-dark) !important;
   stroke-width: 1.2 !important;
   cursor: pointer;
   transition: var(--transition-fast);
 }
 
 .map-svg .active-region:hover, .map-svg #brazil-states-group path.active-region:hover {
-  fill: rgba(57, 255, 20, 0.35) !important;
-  stroke: var(--accent-neon) !important;
+  fill: rgba(141, 181, 33, 0.35) !important;
+  stroke: var(--yfe-green) !important;
 }
 
 /* Tooltip do Mapa */
 .map-tooltip {
   position: absolute;
-  background: rgba(7, 11, 9, 0.95);
-  border: 1px solid var(--accent-gold);
+  background: rgba(7, 11, 2, 0.95);
+  border: 1px solid var(--yfe-green);
   border-radius: 10px;
   padding: 1rem 1.4rem;
   color: #FFF;
@@ -811,7 +818,7 @@ header.scrolled .nav-container {
   -webkit-backdrop-filter: blur(8px);
 }
 
-/* --- JOIN TEAM SECTION (Fundo Escuro) --- */
+/* --- JOIN TEAM SECTION --- */
 .join-banner {
   text-align: center;
   max-width: 850px;
@@ -833,7 +840,7 @@ header.scrolled .nav-container {
   margin-bottom: 3rem;
 }
 
-/* --- EVENTS SECTION (Fundo Escuro, cards inspirados em grids de blogs) --- */
+/* --- EVENTS SECTION --- */
 .events-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -846,16 +853,16 @@ header.scrolled .nav-container {
   justify-content: space-between;
   height: 100%;
   border-color: var(--border-glass);
-  background: rgba(22, 91, 51, 0.05);
+  background: rgba(141, 181, 33, 0.03);
 }
 
 .event-card:hover {
-  border-color: rgba(252, 175, 23, 0.3);
+  border-color: rgba(141, 181, 33, 0.3);
 }
 
 .event-date {
   font-weight: 700;
-  color: var(--accent-gold);
+  color: var(--yfe-green);
   font-size: 0.85rem;
   margin-bottom: 1rem;
   text-transform: uppercase;
@@ -888,8 +895,8 @@ header.scrolled .nav-container {
 }
 
 .event-tag {
-  background: rgba(252, 175, 23, 0.1);
-  color: var(--accent-gold);
+  background: rgba(141, 181, 33, 0.1);
+  color: var(--yfe-green);
   padding: 0.25rem 0.8rem;
   border-radius: 50px;
   font-weight: 700;
@@ -897,7 +904,7 @@ header.scrolled .nav-container {
   text-transform: uppercase;
 }
 
-/* --- DONATIONS SECTION (Fundo Claro com Botões Gold) --- */
+/* --- DONATIONS SECTION --- */
 .donation-box {
   max-width: 650px;
   margin: 0 auto;
@@ -905,7 +912,7 @@ header.scrolled .nav-container {
   flex-direction: column;
   gap: 2.5rem;
   border-radius: 20px;
-  box-shadow: 0 15px 35px rgba(11, 60, 32, 0.04);
+  box-shadow: 0 15px 35px rgba(141, 181, 33, 0.04);
 }
 
 .donation-grid {
@@ -916,7 +923,7 @@ header.scrolled .nav-container {
 
 .donation-option {
   border: 1px solid var(--border-light);
-  background: rgba(11, 60, 32, 0.02);
+  background: rgba(141, 181, 33, 0.02);
   color: var(--text-dark);
   padding: 1.2rem;
   border-radius: 12px;
@@ -928,17 +935,17 @@ header.scrolled .nav-container {
 }
 
 .donation-option:hover, .donation-option.active {
-  background: rgba(11, 60, 32, 0.06);
-  border-color: var(--accent-gold);
-  color: var(--primary-forest);
+  background: rgba(141, 181, 33, 0.05);
+  border-color: var(--yfe-green);
+  color: var(--yfe-green-dark);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(11, 60, 32, 0.05);
+  box-shadow: 0 8px 20px rgba(141, 181, 33, 0.05);
 }
 
 .donation-option.active {
-  border-color: var(--accent-gold);
-  background: rgba(252, 175, 23, 0.1);
-  color: #E09007;
+  border-color: var(--yfe-green);
+  background: rgba(141, 181, 33, 0.12);
+  color: var(--yfe-green-dark);
 }
 
 .custom-donation-input {
@@ -961,7 +968,7 @@ header.scrolled .nav-container {
   padding: 1.2rem 1.5rem 1.2rem 3rem;
   border-radius: 12px;
   border: 1px solid var(--border-light);
-  background: rgba(11, 60, 32, 0.02);
+  background: rgba(141, 181, 33, 0.02);
   font-size: 1.3rem;
   font-weight: 700;
   transition: var(--transition-smooth);
@@ -969,8 +976,8 @@ header.scrolled .nav-container {
 
 .custom-donation-input input:focus {
   outline: none;
-  border-color: var(--accent-gold);
-  background: rgba(11, 60, 32, 0.06);
+  border-color: var(--yfe-green);
+  background: rgba(141, 181, 33, 0.05);
 }
 
 /* --- PARTNERS --- */
@@ -996,7 +1003,7 @@ header.scrolled .nav-container {
 
 /* --- FOOTER --- */
 footer {
-  background: #040706;
+  background: #040702;
   border-top: 1px solid var(--border-glass);
   padding: 6rem 0 3rem 0;
   font-size: 0.95rem;
@@ -1031,7 +1038,7 @@ footer {
 }
 
 .footer-links a:hover {
-  color: var(--accent-gold);
+  color: var(--yfe-green);
   padding-left: 6px;
 }
 
@@ -1100,7 +1107,7 @@ footer {
     left: -100%;
     width: 100%;
     height: calc(100vh - 80px);
-    background: rgba(7, 11, 9, 0.98);
+    background: rgba(7, 11, 2, 0.98);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     flex-direction: column;
