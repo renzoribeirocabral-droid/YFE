@@ -118,7 +118,7 @@ function renderEvents() {
   if (!grid) return;
 
   grid.innerHTML = siteData.events.map(event => `
-    <div class="event-card">
+    <div class="glass-card event-card">
       <div>
         <div class="event-date">${event.date}</div>
         <h3 class="event-title">${event.title}</h3>
@@ -209,8 +209,8 @@ async function loadInteractiveMap() {
     const states = brazilDoc.querySelectorAll(".state");
     states.forEach(state => {
       // Adiciona classe e borda
-      state.setAttribute("stroke", "#B5B5B5");
-      state.setAttribute("stroke-width", "0.4");
+      state.setAttribute("stroke", "#B5BFB9");
+      state.setAttribute("stroke-width", "0.5");
       
       // Verifica se o estado é ativo para destacar
       const stateId = `BR-${state.id}`;
