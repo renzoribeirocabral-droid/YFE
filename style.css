@@ -429,6 +429,7 @@ header.scrolled .nav-container {
 
 .hero-content {
   max-width: 850px;
+  margin: 0 auto;
   z-index: 2;
   opacity: 0;
   transform: translateY(30px);
