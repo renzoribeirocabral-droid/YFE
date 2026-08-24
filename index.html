@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Youth for Environment (YFE) - Reforestation & Climate Action</title>
-  <meta name="description" content="Youth for Environment (YFE) is a global youth-led movement to protect local biomes through reforestation, awareness, and climate governance.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -210,34 +211,34 @@
   </section>
 
   <!-- FORM MODAL -->
-  <div class="modal-overlay" id="form-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(15px);">
-    <div class="glass-card modal-card" style="max-width: 500px; width: 90%; position: relative; padding: 3rem 2.5rem; background: #060A08;">
-      <button id="btn-close-modal" style="position: absolute; top: 1.5rem; right: 1.5rem; font-size: 1.8rem; color: var(--text-muted); font-weight: bold; background: none; border: none; cursor: pointer;">&times;</button>
-      <span class="section-badge" style="margin-bottom: 0.5rem;">REGISTRATION</span>
-      <h3 style="font-family: var(--font-headings); font-size: 1.8rem; margin-bottom: 1.5rem; color: var(--text-light);">Application Form</h3>
-      <form id="signup-form" style="display: flex; flex-direction: column; gap: 1.2rem;">
-        <div style="display: flex; flex-direction: column; gap: 0.5rem; text-align: left;">
-          <label for="form-name" style="font-size: 0.9rem; color: var(--text-muted);">Full Name</label>
-          <input type="text" id="form-name" required style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.02); color: #fff;" placeholder="Your name">
+  <div class="modal-overlay" id="form-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; align-items: center; justify-content: center;">
+    <div class="modal-card" style="max-width: 500px; width: 90%; position: relative;">
+      <button id="btn-close-modal" class="modal-close-btn">&times;</button>
+      <span class="section-badge badge-light">REGISTRATION</span>
+      <h3 class="modal-title">Application Form</h3>
+      <form id="signup-form" class="modal-form">
+        <div class="form-field">
+          <label for="form-name">Full Name</label>
+          <input type="text" id="form-name" required placeholder="Your name">
         </div>
-        <div style="display: flex; flex-direction: column; gap: 0.5rem; text-align: left;">
-          <label for="form-email" style="font-size: 0.9rem; color: var(--text-muted);">Email Address</label>
-          <input type="email" id="form-email" required style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.02); color: #fff;" placeholder="yourname@provider.com">
+        <div class="form-field">
+          <label for="form-email">Email Address</label>
+          <input type="email" id="form-email" required placeholder="yourname@provider.com">
         </div>
-        <div style="display: flex; flex-direction: column; gap: 0.5rem; text-align: left;">
-          <label for="form-society" style="font-size: 0.9rem; color: var(--text-muted);">Choose a Society</label>
-          <select id="form-society" required style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-glass); background: #0A0F0D; color: var(--text-light);">
+        <div class="form-field">
+          <label for="form-society">Choose a Society</label>
+          <select id="form-society" required>
             <option value="YFC">Youth for Cerrado</option>
             <option value="YFA">Youth for Amazon</option>
             <option value="YFAR">Youth for Atlantic Rainforest</option>
             <option value="NEW">Found a new society</option>
           </select>
         </div>
-        <div style="display: flex; flex-direction: column; gap: 0.5rem; text-align: left;">
-          <label for="form-message" style="font-size: 0.9rem; color: var(--text-muted);">Why do you want to join us?</label>
-          <textarea id="form-message" rows="3" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-glass); background: rgba(255,255,255,0.02); color: #fff;" placeholder="Tell us about yourself..."></textarea>
+        <div class="form-field">
+          <label for="form-message">Why do you want to join us?</label>
+          <textarea id="form-message" rows="3" placeholder="Tell us about yourself..."></textarea>
         </div>
-        <button type="submit" class="btn btn-primary btn-gold" style="margin-top: 1rem; width: 100%;" id="submit-signup-btn">Submit Application</button>
+        <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem; width: 100%;" id="submit-signup-btn">Submit Application</button>
       </form>
     </div>
   </div>
