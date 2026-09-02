@@ -1,3 +1,8 @@
+// --- SUPABASE CLIENT INITIALIZATION ---
+const SUPABASE_URL = "https://jihhwwjtzdxatbhelqiy.supabase.co";
+const SUPABASE_KEY = "sb_publishable_nHW4cG5wcI9bMEj3gmUHrw_MPGdYnGK";
+const supabaseClient = (typeof supabase !== "undefined") ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
 // --- DEFAULT / FALLBACK DATA ---
 const DEFAULT_DATA = {
   about: {
@@ -28,31 +33,27 @@ const DEFAULT_DATA = {
       description: "International discussion on the role of youth governance in climate policies before the next global climate conference.",
       date: "July 25, 2026",
       type: "Virtual",
-      location: "Zoom",
-      link: "https://zoom.us"
+      location: "Zoom"
     },
     {
       title: "Reforestation Drive - Clean Cerrado",
       description: "Collective planting action of native species in the Cerrado to restore areas degraded by wildfires.",
       date: "August 12, 2026",
       type: "In-Person",
-      location: "Goiânia, GO",
-      link: ""
+      location: "Goiânia, GO"
     },
     {
       title: "Climate Advocacy Workshop",
       description: "Practical training for young people on how to influence decision-makers and create local ecological public policies.",
       date: "September 5, 2026",
       type: "Virtual",
-      location: "Google Meet",
-      link: "https://meet.google.com"
+      location: "Google Meet"
     }
   ],
   map: {
     activeRegions: {
       "BR-GO": { actions: 12, area: "Cerrado - Goiânia and surrounding area" }
-    },
-    customLocations: []
+    }
   }
 };
 
@@ -61,11 +62,51 @@ let siteData = { ...DEFAULT_DATA };
 let activeSociety = "YFC";
 let activeTab = "about";
 
+// --- DYNAMIC DATA FETCHERS (SUPABASE) ---
+async function fetchSupabaseData() {
+  if (!supabaseClient) return;
+
+  // 1. Fetch Societies from Supabase
+  try {
+    const { data: socData, error: socError } = await supabaseClient.from("societies").select("*");
+    if (!socError && socData && socData.length > 0) {
+      socData.forEach(item => {
+        siteData.societies[item.id] = {
+          name: item.name,
+          about: item.description || "",
+          achievements: item.achievements || ""
+        };
+      });
+      renderSocieties();
+    }
+  } catch (err) {
+    console.error("Error fetching societies from Supabase:", err);
+  }
+
+  // 2. Fetch Events from Supabase
+  try {
+    const { data: evData, error: evError } = await supabaseClient.from("events").select("*").order("created_at", { ascending: false });
+    if (!evError && evData && evData.length > 0) {
+      siteData.events = evData.map(ev => ({
+        id: ev.id,
+        title: ev.title,
+        description: ev.description || "",
+        date: ev.date,
+        type: ev.tag || "Event",
+        location: ev.location || ""
+      }));
+      renderEvents();
+    }
+  } catch (err) {
+    console.error("Error fetching events from Supabase:", err);
+  }
+}
+
 // --- DOM RENDERING FUNCTIONS ---
 
 function renderAboutUs() {
   const container = document.getElementById("about-content");
-  if (!container || !siteData.about) return;
+  if (!container) return;
   
   container.innerHTML = `
     <p>${siteData.about.text1}</p>
@@ -75,7 +116,6 @@ function renderAboutUs() {
 }
 
 function renderSocieties() {
-  if (!siteData.societies) return;
   const soc = siteData.societies[activeSociety];
   if (!soc) return;
 
@@ -88,7 +128,7 @@ function renderSocieties() {
 
 function renderEvents() {
   const grid = document.getElementById("events-grid");
-  if (!grid || !siteData.events) return;
+  if (!grid) return;
 
   grid.innerHTML = siteData.events.map(event => `
     <div class="glass-card event-card">
@@ -101,11 +141,6 @@ function renderEvents() {
         <span>📍 ${event.location}</span>
         <span class="event-tag">${event.type}</span>
       </div>
-      ${event.link ? `
-        <div style="border-top: 1px solid rgba(255,255,255,0.08); padding: 0.8rem 2.5rem; width: 100%; text-align: center;">
-          <a href="${event.link}" target="_blank" class="btn btn-primary" style="padding: 0.4rem 1.2rem; font-size: 0.85rem; width: 100%; text-decoration: none;">Register / View Event ↗</a>
-        </div>
-      ` : ""}
     </div>
   `).join("");
 }
@@ -142,136 +177,86 @@ function setupSocietiesNav() {
 
 // --- SVG MAP INTEGRATION & ALIGNMENT ---
 
+let mainMapInstance = null;
+
 async function loadInteractiveMap() {
   const mapContainer = document.getElementById("map-container");
   if (!mapContainer) return;
 
-  try {
-    let worldRes, brazilRes;
-    
-    // Check if map data is pre-loaded to prevent CORS issues (e.g. running via file://)
-    if (typeof MAP_DATA !== "undefined") {
-      worldRes = MAP_DATA.WORLD_MAP_SVG;
-      brazilRes = MAP_DATA.BRAZIL_STATES_SVG;
-    } else {
-      const [wText, bText] = await Promise.all([
-        fetch("world-map.svg").then(r => r.text()),
-        fetch("brazil-states.svg").then(r => r.text())
-      ]);
-      worldRes = wText;
-      brazilRes = bText;
-    }
+  // Render Leaflet Map if L library is loaded
+  if (typeof L !== 'undefined') {
+    mapContainer.style.height = "500px";
+    mapContainer.style.width = "100%";
+    mapContainer.style.borderRadius = "20px";
+    mapContainer.style.overflow = "hidden";
+    mapContainer.style.position = "relative";
+    mapContainer.style.zIndex = "1";
 
-    mapContainer.innerHTML = "";
-
-    // Inject World Map SVG
-    const parser = new DOMParser();
-    const worldDoc = parser.parseFromString(worldRes, "image/svg+xml");
-    const worldSvg = worldDoc.querySelector("svg");
-    worldSvg.setAttribute("class", "map-svg");
-    worldSvg.setAttribute("id", "interactive-world-map");
-    mapContainer.appendChild(worldSvg);
-
-    // Inject and align Brazil states
-    const brazilDoc = parser.parseFromString(brazilRes, "image/svg+xml");
-    const styleEl = brazilDoc.querySelector("style");
-    if (styleEl) styleEl.remove();
-
-    const brazilSvg = brazilDoc.querySelector("svg");
-    const originalBrPath = worldSvg.querySelector("#br");
-    
-    if (originalBrPath) {
-      const bbox = originalBrPath.getBBox();
-      const brGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
-      brGroup.setAttribute("id", "brazil-states-group");
-
-      const states = brazilDoc.querySelectorAll(".state");
-      states.forEach(state => {
-        state.setAttribute("stroke", "#FFFFFF");
-        state.setAttribute("stroke-width", "0.8");
-        
-        const stateId = `BR-${state.id}`;
-        if (siteData.map && siteData.map.activeRegions && siteData.map.activeRegions[stateId]) {
-          state.setAttribute("class", "state active-region");
-        }
-
-        brGroup.appendChild(state.cloneNode(true));
+    if (!mainMapInstance) {
+      mapContainer.innerHTML = "";
+      mainMapInstance = L.map("map-container", {
+        center: [-14.235, -51.925],
+        zoom: 4,
+        zoomControl: true,
+        scrollWheelZoom: false
       });
 
-      const scaleX = bbox.width / 353.845;
-      const scaleY = bbox.height / 367.766;
-      brGroup.setAttribute("transform", `translate(${bbox.x}, ${bbox.y}) scale(${scaleX}, ${scaleY})`);
-      originalBrPath.parentNode.replaceChild(brGroup, originalBrPath);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
+      }).addTo(mainMapInstance);
     }
 
-    // Render Custom Map Location Pins
-    renderMapPins(worldSvg);
+    // Clear previous markers
+    mainMapInstance.eachLayer((layer) => {
+      if (layer instanceof L.Marker) {
+        mainMapInstance.removeLayer(layer);
+      }
+    });
 
-    // Configure map interactivity (Tooltip / Hover)
-    setupMapInteractivity();
+    // Custom Green Leaf Pin Icon
+    const greenPinIcon = L.divIcon({
+      className: 'yfe-map-pin',
+      html: `<div style="background: #2D6A4F; width: 32px; height: 32px; border-radius: 50%; border: 3px solid #FFFFFF; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px;">🌱</div>`,
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+      popupAnchor: [0, -16]
+    });
 
-  } catch (error) {
-    console.error("Error loading the interactive map:", error);
-    const loadingEl = document.getElementById("map-loading");
-    if (loadingEl) loadingEl.textContent = "Error loading the interactive map. Please check your settings.";
+    // Fetch locations from Supabase
+    let locationsList = [];
+    if (supabaseClient) {
+      const { data, error } = await supabaseClient.from("locations").select("*");
+      if (!error && data) {
+        locationsList = data;
+      }
+    }
+
+    const validCoords = [];
+    locationsList.forEach(loc => {
+      const lat = parseFloat(loc.latitude);
+      const lng = parseFloat(loc.longitude);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        validCoords.push([lat, lng]);
+        const marker = L.marker([lat, lng], { icon: greenPinIcon }).addTo(mainMapInstance);
+        marker.bindPopup(`
+          <div style="font-family: var(--font-sans); padding: 4px; color: #0F1D15; max-width: 220px;">
+            <span style="font-size: 10px; font-weight: 800; color: #2D6A4F; text-transform: uppercase; letter-spacing: 1px;">${loc.biome || 'Location'}</span>
+            <h4 style="margin: 4px 0 6px 0; font-family: var(--font-headings); font-size: 15px; font-weight: 700; color: #0F1D15;">${loc.name}</h4>
+            <p style="margin: 0; font-size: 12px; color: #4A5D52; line-height: 1.4;">${loc.description || ''}</p>
+          </div>
+        `);
+      }
+    });
+
+    if (validCoords.length > 0) {
+      const bounds = L.latLngBounds(validCoords);
+      if (bounds.isValid()) {
+        mainMapInstance.fitBounds(bounds, { padding: [50, 50], maxZoom: 6 });
+      }
+    }
   }
-}
-
-function renderMapPins(worldSvg) {
-  if (!siteData || !siteData.map || !siteData.map.customLocations) return;
-
-  const existingGroup = worldSvg.querySelector("#custom-pins-group");
-  if (existingGroup) existingGroup.remove();
-
-  const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
-  group.setAttribute("id", "custom-pins-group");
-
-  const tooltip = document.getElementById("map-tooltip");
-
-  siteData.map.customLocations.forEach(loc => {
-    const viewBox = worldSvg.getAttribute("viewBox") ? worldSvg.getAttribute("viewBox").split(" ").map(Number) : [0, 0, 1010, 666];
-    const vbWidth = viewBox[2] || 1010;
-    const vbHeight = viewBox[3] || 666;
-
-    const cx = (loc.xPct / 100) * vbWidth;
-    const cy = (loc.yPct / 100) * vbHeight;
-
-    const pin = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    pin.setAttribute("cx", cx);
-    pin.setAttribute("cy", cy);
-    pin.setAttribute("r", "9");
-    pin.setAttribute("fill", "#52B788");
-    pin.setAttribute("stroke", "#FFFFFF");
-    pin.setAttribute("stroke-width", "2.5");
-    pin.style.cursor = "pointer";
-    pin.style.filter = "drop-shadow(0px 2px 4px rgba(0,0,0,0.5))";
-
-    pin.addEventListener("mouseenter", () => {
-      tooltip.style.opacity = "1";
-      tooltip.innerHTML = `
-        <strong>📍 ${loc.name}</strong><br/>
-        🌱 Biome: ${loc.biome}<br/>
-        🌍 Lat/Lng: ${loc.lat}, ${loc.lng}<br/>
-        <span style="font-size: 0.8rem; opacity: 0.9;">${loc.description}</span>
-      `;
-    });
-
-    pin.addEventListener("mousemove", (e) => {
-      const mapBox = document.getElementById("map-container").getBoundingClientRect();
-      const x = e.clientX - mapBox.left + 15;
-      const y = e.clientY - mapBox.top + 15;
-      tooltip.style.left = `${x}px`;
-      tooltip.style.top = `${y}px`;
-    });
-
-    pin.addEventListener("mouseleave", () => {
-      tooltip.style.opacity = "0";
-    });
-
-    group.appendChild(pin);
-  });
-
-  worldSvg.appendChild(group);
 }
 
 function setupMapInteractivity() {
@@ -279,13 +264,14 @@ function setupMapInteractivity() {
   const activeElements = document.querySelectorAll(".map-svg .active-region, .map-svg path, .map-svg polygon");
 
   activeElements.forEach(el => {
+    // Only add interactive effects to regions marked as active
     const regionId = el.id ? (el.id.length === 2 ? `BR-${el.id}` : el.id) : null;
-    const regionData = siteData.map && siteData.map.activeRegions ? siteData.map.activeRegions[regionId] : null;
+    const regionData = siteData.map.activeRegions[regionId];
 
     if (regionData) {
       el.classList.add("active-region");
       
-      el.addEventListener("mouseenter", () => {
+      el.addEventListener("mouseenter", (e) => {
         tooltip.style.opacity = "1";
         tooltip.innerHTML = `
           <strong>${el.getAttribute("id") || "Region"}</strong><br/>
@@ -346,6 +332,7 @@ function setupDonationSystem() {
       }
     }
 
+    // PayPal integration simulation
     alert(`Redirecting to PayPal to complete your donation of $${finalAmount}... (Test Mode)`);
     window.open(`https://www.paypal.com/donate/?business=renzoribeirocabral@gmail.com&amount=${finalAmount}&currency_code=USD`, "_blank");
   });
@@ -369,8 +356,6 @@ function setupBurgerMenu() {
   const menu = document.getElementById("nav-menu");
   const links = document.querySelectorAll(".nav-link, #header-donate-btn");
 
-  if (!burger || !menu) return;
-
   burger.addEventListener("click", () => {
     menu.classList.toggle("open");
     burger.classList.toggle("toggle");
@@ -389,8 +374,6 @@ function setupModal() {
   const openBtn = document.getElementById("btn-open-form");
   const closeBtn = document.getElementById("btn-close-modal");
   const form = document.getElementById("signup-form");
-
-  if (!modal || !openBtn || !closeBtn) return;
 
   openBtn.addEventListener("click", () => {
     modal.style.display = "flex";
@@ -416,23 +399,21 @@ function setupModal() {
 }
 
 // --- INIT APP ---
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
   setupHeaderScroll();
   setupBurgerMenu();
   setupSocietiesNav();
   setupDonationSystem();
   setupModal();
   
-  // Load dynamic data from cloud / LocalStorage fallback
-  if (typeof DB !== "undefined") {
-    siteData = await DB.loadData();
-  }
-
-  // Render content
+  // Render initial content
   renderAboutUs();
   renderSocieties();
   renderEvents();
   
   // Load interactive map
   loadInteractiveMap();
+
+  // Fetch dynamic data from Supabase database
+  fetchSupabaseData();
 });

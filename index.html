@@ -7,6 +7,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="style.css">
+  <!-- SUPABASE SDK & LEAFLET MAP CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
 
@@ -316,6 +320,7 @@
         <ul class="footer-links" style="align-items: center;">
           <li>Instagram: <a href="https://www.instagram.com/youthforenvironmentorg?igsh=a2Y4cmY1eTV2d2tx" target="_blank" rel="noopener noreferrer" style="color: var(--yfe-green-light); word-break: break-all;" id="footer-instagram">@youthforenvironmentorg</a></li>
           <li>Email: <a href="mailto:contato@youthforenvironment.org" id="footer-email">contact@youthforenvironment.org</a></li>
+          <li><a href="admin.html" style="color: rgba(255,255,255,0.4); font-size: 0.85rem;" id="footer-admin">🔒 Admin Dashboard</a></li>
         </ul>
       </div>
       
@@ -325,9 +330,7 @@
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="map-data.js"></script>
-  <script src="db.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
