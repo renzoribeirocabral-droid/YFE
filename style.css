@@ -367,7 +367,7 @@ header.scrolled .burger-bar {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: linear-gradient(180deg, rgba(17, 34, 24, 0.65) 0%, rgba(17, 34, 24, 0.40) 50%, rgba(248, 250, 247, 1) 100%), url('hero.image.jpg');
+  background-image: linear-gradient(180deg, rgba(17, 34, 24, 0.65) 0%, rgba(17, 34, 24, 0.40) 50%, rgba(248, 250, 247, 1) 100%), url('Images/hero.image.jpg');
   background-size: cover;
   background-position: center;
   z-index: 1;
