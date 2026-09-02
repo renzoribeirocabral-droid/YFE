@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YFE Admin Panel - Youth for Environment</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* Admin specific component styling using existing YFE design system */
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      min-height: 100vh;
+    }
+
+    .admin-header {
+      background-color: #182F22;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 1.2rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .admin-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .admin-title-badge {
+      background-color: var(--yfe-green);
+      color: #FFF;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 50px;
+      margin-left: 0.8rem;
+      text-transform: uppercase;
+    }
+
+    .admin-container {
+      max-width: 1200px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem 5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+    }
+
+    .admin-card {
+      background-color: #182F22;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .admin-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 1rem;
+    }
+
+    .admin-card-title {
+      font-family: var(--font-headings);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .admin-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .admin-form-group label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .admin-input, .admin-select, .admin-textarea {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background-color: rgba(255, 255, 255, 0.05);
+      color: var(--text-light);
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      outline: none;
+      transition: var(--transition-smooth);
+    }
+
+    .admin-input:focus, .admin-select:focus, .admin-textarea:focus {
+      border-color: var(--yfe-green-light);
+      background-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .admin-select option {
+      background-color: #182F22;
+      color: #FFF;
+    }
+
+    .admin-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.8rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition-smooth);
+    }
+
+    .admin-btn-primary {
+      background-color: var(--yfe-green);
+      color: #FFF;
+    }
+
+    .admin-btn-primary:hover {
+      background-color: var(--yfe-green-light);
+      transform: translateY(-2px);
+    }
+
+    .admin-btn-danger {
+      background-color: rgba(224, 86, 86, 0.15);
+      color: #FF6B6B;
+      border: 1px solid rgba(224, 86, 86, 0.3);
+    }
+
+    .admin-btn-danger:hover {
+      background-color: #FF6B6B;
+      color: #FFF;
+    }
+
+    .admin-btn-secondary {
+      background-color: rgba(255, 255, 255, 0.08);
+      color: var(--text-light);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .admin-btn-secondary:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    /* List items & tables */
+    .admin-item-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .admin-item-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1.5rem;
+    }
+
+    .admin-table th, .admin-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .admin-table th {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+
+    /* Map Click Admin styling */
+    .admin-map-wrapper {
+      position: relative;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      cursor: crosshair;
+      margin-bottom: 2rem;
+    }
+
+    .admin-map-instruction {
+      font-size: 0.95rem;
+      color: var(--yfe-green-light);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Login Modal Lock */
+    #auth-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(10, 20, 14, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .auth-card {
+      background: #182F22;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 24px;
+      padding: 3.5rem 3rem;
+      max-width: 440px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    .auth-title {
+      font-family: var(--font-headings);
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .auth-subtitle {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    .auth-error {
+      color: #FF6B6B;
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .toast-msg {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--yfe-green);
+      color: #FFF;
+      padding: 1rem 1.8rem;
+      border-radius: 50px;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      z-index: 10000;
+      display: none;
+      animation: fadeInUp 0.4s ease;
+    }
+  </style>
+
+  <!-- Supabase JS Client (Public CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <!-- AUTHENTICATION OVERLAY MODAL -->
+  <div id="auth-overlay">
+    <div class="auth-card">
+      <div class="logo" style="justify-content: center; margin-bottom: 1.5rem;">
+        <img src="Logos/YFE.jpg" alt="YFE Logo" style="height: 50px; border-radius: 12px;">
+      </div>
+      <h2 class="auth-title">YFE Admin Panel</h2>
+      <p class="auth-subtitle">Digite a senha administrativa para acessar o painel de gerenciamento.</p>
+      
+      <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+        <div class="admin-form-group">
+          <input type="password" id="auth-password" class="admin-input" placeholder="Senha administrativa" required style="text-align: center; letter-spacing: 2px;">
+        </div>
+        <button type="submit" class="admin-btn admin-btn-primary" style="width: 100%; margin-top: 1rem;">Acessar Painel</button>
+        <p id="auth-error" class="auth-error">Senha incorreta. Tente novamente.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADMIN DASHBOARD CONTENT -->
+  <div id="admin-dashboard" style="display: none;">
+    <!-- HEADER -->
+    <header class="admin-header">
+      <div class="admin-nav">
+        <div class="logo">
+          <img src="Logos/YFE.jpg" alt="YFE Logo" style="height: 38px; border-radius: 8px;">
+          <span class="logo-text" style="font-size: 1.25rem;">Youth for Environment</span>
+          <span class="admin-title-badge">Painel Admin</span>
+        </div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <a href="index.html" class="admin-btn admin-btn-secondary" style="text-decoration: none;">Ver Site Principal ↗</a>
+          <button onclick="handleLogout()" class="admin-btn admin-btn-danger">Sair</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="admin-container">
+      
+      <!-- 1. MAP MANAGER SECTION -->
+      <section class="admin-card">
+        <div class="admin-card-header">
+          <h2 class="admin-card-title">🗺️ Gerenciador do Mapa Interativo ('Where We Work')</h2>
+        </div>
+        
+        <p class="admin-map-instruction">
+          📍 <strong>Instrução:</strong> Clique em qualquer ponto do mapa abaixo para capturar as coordenadas (Latitude/Longitude) e registrar um novo local.
+        </p>
+
+        <!-- MAP CONTAINER -->
+        <div class="admin-map-wrapper">
+          <div id="admin-map-container" style="width: 100%; min-height: 380px;"></div>
+        </div>
+
+        <!-- LOCATION ADD FORM -->
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 2rem; margin-bottom: 2.5rem;">
+          <h3 style="font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--yfe-green-light);" id="form-location-header">Adicionar Novo Local no Mapa</h3>
+          <form id="map-location-form" onsubmit="handleSaveLocation(event)">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+              <div class="admin-form-group">
+                <label for="loc-name">Nome do Local</label>
+                <input type="text" id="loc-name" class="admin-input" placeholder="Ex: Goiânia Central Action Base" required>
+              </div>
+              <div class="admin-form-group">
+                <label for="loc-biome">Bioma</label>
+                <select id="loc-biome" class="admin-select" required>
+                  <option value="Cerrado">Cerrado</option>
+                  <option value="Amazon">Amazônia (Amazon)</option>
+                  <option value="Atlantic Rainforest">Mata Atlântica (Atlantic Rainforest)</option>
+                  <option value="Caatinga">Caatinga</option>
+                  <option value="Pantanal">Pantanal</option>
+                  <option value="Pampa">Pampa</option>
+                  <option value="International">Internacional</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+              <div class="admin-form-group">
+                <label for="loc-lat">Latitude Capturada</label>
+                <input type="number" step="any" id="loc-lat" class="admin-input" placeholder="-16.6869" required readonly style="background: rgba(255,255,255,0.02);">
+              </div>
+              <div class="admin-form-group">
+                <label for="loc-lng">Longitude Capturada</label>
+                <input type="number" step="any" id="loc-lng" class="admin-input" placeholder="-49.2648" required readonly style="background: rgba(255,255,255,0.02);">
+              </div>
+            </div>
+
+            <div class="admin-form-group">
+              <label for="loc-desc">Descrição das Ações no Local</label>
+              <textarea id="loc-desc" class="admin-textarea" rows="3" placeholder="Descreva as atividades ambientais realizadas neste local..." required></textarea>
+            </div>
+
+            <button type="submit" class="admin-btn admin-btn-primary">💾 Salvar Local</button>
+          </form>
+        </div>
+
+        <!-- LOCATIONS LIST TABLE -->
+        <h3 style="font-size: 1.2rem; margin-bottom: 1rem;">Locais Marcados no Mapa</h3>
+        <div style="overflow-x: auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Nome do Local</th>
+                <th>Bioma</th>
+                <th>Lat / Long</th>
+                <th>Descrição</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="locations-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 2. SOCIETIES & ACHIEVEMENTS MANAGER SECTION -->
+      <section class="admin-card">
+        <div class="admin-card-header">
+          <h2 class="admin-card-title">🌱 Gerenciador de Sociedades e Conquistas (Achievements)</h2>
+        </div>
+
+        <div class="admin-form-group" style="max-width: 450px;">
+          <label for="select-society">Selecione a Sociedade</label>
+          <select id="select-society" class="admin-select" onchange="loadSocietyForm(this.value)">
+            <option value="YFC">Youth for Cerrado (YFC)</option>
+            <option value="YFA">Youth for Amazon (YFA)</option>
+            <option value="YFAR">Youth for Atlantic Rainforest (YFAR)</option>
+          </select>
+        </div>
+
+        <form id="society-form" onsubmit="handleUpdateSociety(event)" style="margin-top: 2rem;">
+          <div class="admin-form-group">
+            <label for="society-about">Descrição da Sociedade (About)</label>
+            <textarea id="society-about" class="admin-textarea" rows="4" required></textarea>
+          </div>
+
+          <div class="admin-form-group">
+            <label for="society-achievements">Lista de Conquistas (Achievements)</label>
+            <textarea id="society-achievements" class="admin-textarea" rows="4" placeholder="Descreva os principais impactos e conquistas..." required></textarea>
+          </div>
+
+          <button type="submit" class="admin-btn admin-btn-primary">🔄 Atualizar Sociedade</button>
+        </form>
+      </section>
+
+      <!-- 3. EVENTS MANAGER SECTION -->
+      <section class="admin-card">
+        <div class="admin-card-header">
+          <h2 class="admin-card-title">📅 Gerenciador de Eventos</h2>
+        </div>
+
+        <!-- EVENT CREATE FORM -->
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 2rem; margin-bottom: 2.5rem;">
+          <h3 style="font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--yfe-green-light);">Criar Novo Evento</h3>
+          <form id="event-form" onsubmit="handleCreateEvent(event)">
+            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1.5rem;">
+              <div class="admin-form-group">
+                <label for="evt-title">Título do Evento</label>
+                <input type="text" id="evt-title" class="admin-input" placeholder="Ex: Reforestation Drive - Clean Cerrado" required>
+              </div>
+              <div class="admin-form-group">
+                <label for="evt-date">Data</label>
+                <input type="text" id="evt-date" class="admin-input" placeholder="Ex: August 12, 2026" required>
+              </div>
+              <div class="admin-form-group">
+                <label for="evt-type">Tipo</label>
+                <select id="evt-type" class="admin-select" required>
+                  <option value="In-Person">Presencial (In-Person)</option>
+                  <option value="Virtual">Virtual</option>
+                  <option value="Hybrid">Híbrido</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+              <div class="admin-form-group">
+                <label for="evt-location">Local</label>
+                <input type="text" id="evt-location" class="admin-input" placeholder="Ex: Goiânia, GO ou Zoom" required>
+              </div>
+              <div class="admin-form-group">
+                <label for="evt-link">Link de Inscrição / Detalhes (Opcional)</label>
+                <input type="url" id="evt-link" class="admin-input" placeholder="https://zoom.us ou link do formulário">
+              </div>
+            </div>
+
+            <div class="admin-form-group">
+              <label for="evt-desc">Descrição do Evento</label>
+              <textarea id="evt-desc" class="admin-textarea" rows="3" placeholder="Descreva os objetivos e atividades do evento..." required></textarea>
+            </div>
+
+            <button type="submit" class="admin-btn admin-btn-primary">➕ Adicionar Evento</button>
+          </form>
+        </div>
+
+        <!-- EVENTS VISUAL LIST -->
+        <h3 style="font-size: 1.2rem; margin-bottom: 1rem;">Eventos Cadastrados</h3>
+        <div id="admin-events-grid" class="admin-item-grid">
+          <!-- Dynamically populated -->
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast-msg" class="toast-msg">Operação realizada com sucesso!</div>
+
+  <!-- DEPENDENCIES & SCRIPTS -->
+  <script src="map-data.js"></script>
+  <script src="db.js"></script>
+  <script src="admin.js"></script>
+
+</body>
+</html>

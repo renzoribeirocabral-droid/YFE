@@ -1,4 +1,4 @@
-// --- DEFAULT / FALLBACK DATA (Based on outline) ---
+// --- DEFAULT / FALLBACK DATA ---
 const DEFAULT_DATA = {
   about: {
     text1: "Youth for Environment is a global youth-led movement that began in Brazil with the mission of empowering young people to protect their local biomes while participating in environmental governance and climate action.",
@@ -28,27 +28,31 @@ const DEFAULT_DATA = {
       description: "International discussion on the role of youth governance in climate policies before the next global climate conference.",
       date: "July 25, 2026",
       type: "Virtual",
-      location: "Zoom"
+      location: "Zoom",
+      link: "https://zoom.us"
     },
     {
       title: "Reforestation Drive - Clean Cerrado",
       description: "Collective planting action of native species in the Cerrado to restore areas degraded by wildfires.",
       date: "August 12, 2026",
       type: "In-Person",
-      location: "Goiânia, GO"
+      location: "Goiânia, GO",
+      link: ""
     },
     {
       title: "Climate Advocacy Workshop",
       description: "Practical training for young people on how to influence decision-makers and create local ecological public policies.",
       date: "September 5, 2026",
       type: "Virtual",
-      location: "Google Meet"
+      location: "Google Meet",
+      link: "https://meet.google.com"
     }
   ],
   map: {
     activeRegions: {
       "BR-GO": { actions: 12, area: "Cerrado - Goiânia and surrounding area" }
-    }
+    },
+    customLocations: []
   }
 };
 
@@ -61,7 +65,7 @@ let activeTab = "about";
 
 function renderAboutUs() {
   const container = document.getElementById("about-content");
-  if (!container) return;
+  if (!container || !siteData.about) return;
   
   container.innerHTML = `
     <p>${siteData.about.text1}</p>
@@ -71,6 +75,7 @@ function renderAboutUs() {
 }
 
 function renderSocieties() {
+  if (!siteData.societies) return;
   const soc = siteData.societies[activeSociety];
   if (!soc) return;
 
@@ -83,7 +88,7 @@ function renderSocieties() {
 
 function renderEvents() {
   const grid = document.getElementById("events-grid");
-  if (!grid) return;
+  if (!grid || !siteData.events) return;
 
   grid.innerHTML = siteData.events.map(event => `
     <div class="glass-card event-card">
@@ -96,6 +101,11 @@ function renderEvents() {
         <span>📍 ${event.location}</span>
         <span class="event-tag">${event.type}</span>
       </div>
+      ${event.link ? `
+        <div style="border-top: 1px solid rgba(255,255,255,0.08); padding: 0.8rem 2.5rem; width: 100%; text-align: center;">
+          <a href="${event.link}" target="_blank" class="btn btn-primary" style="padding: 0.4rem 1.2rem; font-size: 0.85rem; width: 100%; text-decoration: none;">Register / View Event ↗</a>
+        </div>
+      ` : ""}
     </div>
   `).join("");
 }
@@ -144,7 +154,6 @@ async function loadInteractiveMap() {
       worldRes = MAP_DATA.WORLD_MAP_SVG;
       brazilRes = MAP_DATA.BRAZIL_STATES_SVG;
     } else {
-      // Fallback to fetch if MAP_DATA is not defined
       const [wText, bText] = await Promise.all([
         fetch("world-map.svg").then(r => r.text()),
         fetch("brazil-states.svg").then(r => r.text())
@@ -153,10 +162,9 @@ async function loadInteractiveMap() {
       brazilRes = bText;
     }
 
-    // Limpa o container
     mapContainer.innerHTML = "";
 
-    // 2. Injeta o mapa do mundo
+    // Inject World Map SVG
     const parser = new DOMParser();
     const worldDoc = parser.parseFromString(worldRes, "image/svg+xml");
     const worldSvg = worldDoc.querySelector("svg");
@@ -164,64 +172,106 @@ async function loadInteractiveMap() {
     worldSvg.setAttribute("id", "interactive-world-map");
     mapContainer.appendChild(worldSvg);
 
-    // 3. Inject and align Brazil states
+    // Inject and align Brazil states
     const brazilDoc = parser.parseFromString(brazilRes, "image/svg+xml");
-    
-    // Remove style tag to avoid conflicts (like orange hover states)
     const styleEl = brazilDoc.querySelector("style");
-    if (styleEl) {
-      styleEl.remove();
-    }
+    if (styleEl) styleEl.remove();
 
     const brazilSvg = brazilDoc.querySelector("svg");
-    
-    // Get the original Brazil path in the world map
     const originalBrPath = worldSvg.querySelector("#br");
-    if (!originalBrPath) {
-      console.error("Path with id 'br' not found in the world map.");
-      return;
+    
+    if (originalBrPath) {
+      const bbox = originalBrPath.getBBox();
+      const brGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      brGroup.setAttribute("id", "brazil-states-group");
+
+      const states = brazilDoc.querySelectorAll(".state");
+      states.forEach(state => {
+        state.setAttribute("stroke", "#FFFFFF");
+        state.setAttribute("stroke-width", "0.8");
+        
+        const stateId = `BR-${state.id}`;
+        if (siteData.map && siteData.map.activeRegions && siteData.map.activeRegions[stateId]) {
+          state.setAttribute("class", "state active-region");
+        }
+
+        brGroup.appendChild(state.cloneNode(true));
+      });
+
+      const scaleX = bbox.width / 353.845;
+      const scaleY = bbox.height / 367.766;
+      brGroup.setAttribute("transform", `translate(${bbox.x}, ${bbox.y}) scale(${scaleX}, ${scaleY})`);
+      originalBrPath.parentNode.replaceChild(brGroup, originalBrPath);
     }
 
-    // Calculate the original bounding box of Brazil in the world map
-    // Note: Since the SVG has been added to the DOM, getBBox works perfectly
-    const bbox = originalBrPath.getBBox();
+    // Render Custom Map Location Pins
+    renderMapPins(worldSvg);
 
-    // Create a group for the states of Brazil
-    const brGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    brGroup.setAttribute("id", "brazil-states-group");
-
-    // Move the paths (states) of the Brazil SVG to the new group
-    const states = brazilDoc.querySelectorAll(".state");
-    states.forEach(state => {
-      // Add class and border (adjusted to white like other countries)
-      state.setAttribute("stroke", "#FFFFFF");
-      state.setAttribute("stroke-width", "0.8");
-      
-      // Check if the state is active to highlight it
-      const stateId = `BR-${state.id}`;
-      if (siteData.map.activeRegions[stateId]) {
-        state.setAttribute("class", "state active-region");
-      }
-
-      brGroup.appendChild(state.cloneNode(true));
-    });
-
-    // Align Brazil states with the exact scale and translation of the original path
-    // The viewBox of the Brazil map is "0 0 353.845 367.766"
-    const scaleX = bbox.width / 353.845;
-    const scaleY = bbox.height / 367.766;
-    brGroup.setAttribute("transform", `translate(${bbox.x}, ${bbox.y}) scale(${scaleX}, ${scaleY})`);
-
-    // Replace the original Brazil path with the states group
-    originalBrPath.parentNode.replaceChild(brGroup, originalBrPath);
-
-    // 4. Configure map interactivity (Tooltip / Hover)
+    // Configure map interactivity (Tooltip / Hover)
     setupMapInteractivity();
 
   } catch (error) {
     console.error("Error loading the interactive map:", error);
-    document.getElementById("map-loading").textContent = "Error loading the interactive map. Please check your settings.";
+    const loadingEl = document.getElementById("map-loading");
+    if (loadingEl) loadingEl.textContent = "Error loading the interactive map. Please check your settings.";
   }
+}
+
+function renderMapPins(worldSvg) {
+  if (!siteData || !siteData.map || !siteData.map.customLocations) return;
+
+  const existingGroup = worldSvg.querySelector("#custom-pins-group");
+  if (existingGroup) existingGroup.remove();
+
+  const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  group.setAttribute("id", "custom-pins-group");
+
+  const tooltip = document.getElementById("map-tooltip");
+
+  siteData.map.customLocations.forEach(loc => {
+    const viewBox = worldSvg.getAttribute("viewBox") ? worldSvg.getAttribute("viewBox").split(" ").map(Number) : [0, 0, 1010, 666];
+    const vbWidth = viewBox[2] || 1010;
+    const vbHeight = viewBox[3] || 666;
+
+    const cx = (loc.xPct / 100) * vbWidth;
+    const cy = (loc.yPct / 100) * vbHeight;
+
+    const pin = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    pin.setAttribute("cx", cx);
+    pin.setAttribute("cy", cy);
+    pin.setAttribute("r", "9");
+    pin.setAttribute("fill", "#52B788");
+    pin.setAttribute("stroke", "#FFFFFF");
+    pin.setAttribute("stroke-width", "2.5");
+    pin.style.cursor = "pointer";
+    pin.style.filter = "drop-shadow(0px 2px 4px rgba(0,0,0,0.5))";
+
+    pin.addEventListener("mouseenter", () => {
+      tooltip.style.opacity = "1";
+      tooltip.innerHTML = `
+        <strong>📍 ${loc.name}</strong><br/>
+        🌱 Biome: ${loc.biome}<br/>
+        🌍 Lat/Lng: ${loc.lat}, ${loc.lng}<br/>
+        <span style="font-size: 0.8rem; opacity: 0.9;">${loc.description}</span>
+      `;
+    });
+
+    pin.addEventListener("mousemove", (e) => {
+      const mapBox = document.getElementById("map-container").getBoundingClientRect();
+      const x = e.clientX - mapBox.left + 15;
+      const y = e.clientY - mapBox.top + 15;
+      tooltip.style.left = `${x}px`;
+      tooltip.style.top = `${y}px`;
+    });
+
+    pin.addEventListener("mouseleave", () => {
+      tooltip.style.opacity = "0";
+    });
+
+    group.appendChild(pin);
+  });
+
+  worldSvg.appendChild(group);
 }
 
 function setupMapInteractivity() {
@@ -229,14 +279,13 @@ function setupMapInteractivity() {
   const activeElements = document.querySelectorAll(".map-svg .active-region, .map-svg path, .map-svg polygon");
 
   activeElements.forEach(el => {
-    // Only add interactive effects to regions marked as active
     const regionId = el.id ? (el.id.length === 2 ? `BR-${el.id}` : el.id) : null;
-    const regionData = siteData.map.activeRegions[regionId];
+    const regionData = siteData.map && siteData.map.activeRegions ? siteData.map.activeRegions[regionId] : null;
 
     if (regionData) {
       el.classList.add("active-region");
       
-      el.addEventListener("mouseenter", (e) => {
+      el.addEventListener("mouseenter", () => {
         tooltip.style.opacity = "1";
         tooltip.innerHTML = `
           <strong>${el.getAttribute("id") || "Region"}</strong><br/>
@@ -297,7 +346,6 @@ function setupDonationSystem() {
       }
     }
 
-    // PayPal integration simulation
     alert(`Redirecting to PayPal to complete your donation of $${finalAmount}... (Test Mode)`);
     window.open(`https://www.paypal.com/donate/?business=renzoribeirocabral@gmail.com&amount=${finalAmount}&currency_code=USD`, "_blank");
   });
@@ -321,6 +369,8 @@ function setupBurgerMenu() {
   const menu = document.getElementById("nav-menu");
   const links = document.querySelectorAll(".nav-link, #header-donate-btn");
 
+  if (!burger || !menu) return;
+
   burger.addEventListener("click", () => {
     menu.classList.toggle("open");
     burger.classList.toggle("toggle");
@@ -339,6 +389,8 @@ function setupModal() {
   const openBtn = document.getElementById("btn-open-form");
   const closeBtn = document.getElementById("btn-close-modal");
   const form = document.getElementById("signup-form");
+
+  if (!modal || !openBtn || !closeBtn) return;
 
   openBtn.addEventListener("click", () => {
     modal.style.display = "flex";
@@ -364,14 +416,19 @@ function setupModal() {
 }
 
 // --- INIT APP ---
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   setupHeaderScroll();
   setupBurgerMenu();
   setupSocietiesNav();
   setupDonationSystem();
   setupModal();
   
-  // Render initial content
+  // Load dynamic data from cloud / LocalStorage fallback
+  if (typeof DB !== "undefined") {
+    siteData = await DB.loadData();
+  }
+
+  // Render content
   renderAboutUs();
   renderSocieties();
   renderEvents();
