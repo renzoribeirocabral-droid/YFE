@@ -198,13 +198,11 @@
   <div class="admin-top-bar" id="admin-bar">
     <div class="admin-bar-brand">
       <span class="admin-pulse"></span>
-      <span>Live Website Editor</span>
-      <span class="admin-bar-hint">✏️ Click text to edit &bull; 🗺️ Click map areas to toggle</span>
+      <span>Admin Editor</span>
     </div>
     <div class="admin-bar-actions">
-      <button id="btn-save-content" class="admin-btn admin-btn-save">💾 Save Content</button>
-      <a href="index.html" class="admin-btn admin-btn-subtle" target="_blank">👁️ View Site</a>
-      <button id="btn-logout" class="admin-btn admin-btn-subtle">Logout</button>
+      <button id="btn-cancel-content" class="admin-btn admin-btn-subtle">Cancel Changes</button>
+      <button id="btn-save-content" class="admin-btn admin-btn-save">Save Changes</button>
     </div>
   </div>
 
@@ -252,22 +250,27 @@
     </div>
   </section>
 
-  <!-- STATS BAR SECTION -->
+  <!-- STATS BAR SECTION (EDITABLE) -->
   <section class="stats-bar" id="stats">
     <div class="container stats-container">
       <div class="stat-item">
-        <span class="stat-number">10k+</span>
-        <span class="stat-label">Trees Planted</span>
+        <span class="stat-number" id="edit-stat1-num" contenteditable="true" title="Click to edit">3+</span>
+        <span class="stat-label" id="edit-stat1-lbl" contenteditable="true" title="Click to edit">Biomes Protected</span>
       </div>
       <div class="stat-divider"></div>
       <div class="stat-item">
-        <span class="stat-number">3+</span>
-        <span class="stat-label">Local Biomes</span>
+        <span class="stat-number" id="edit-stat2-num" contenteditable="true" title="Click to edit">15k+</span>
+        <span class="stat-label" id="edit-stat2-lbl" contenteditable="true" title="Click to edit">Trees Planted</span>
       </div>
       <div class="stat-divider"></div>
       <div class="stat-item">
-        <span class="stat-number">2,000+</span>
-        <span class="stat-label">Youth Leaders</span>
+        <span class="stat-number" id="edit-stat3-num" contenteditable="true" title="Click to edit">500+</span>
+        <span class="stat-label" id="edit-stat3-lbl" contenteditable="true" title="Click to edit">Active Members</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-number" id="edit-stat4-num" contenteditable="true" title="Click to edit">50+</span>
+        <span class="stat-label" id="edit-stat4-lbl" contenteditable="true" title="Click to edit">Actions Completed</span>
       </div>
     </div>
   </section>
@@ -376,7 +379,7 @@
       <p class="section-subtitle">Manage active regions on the original map. Green areas are visible on the main site.</p>
 
       <div class="admin-map-instruction">
-        <span>📍 <strong>Map Editor:</strong> Click on any state or country to toggle it. Active regions turn green and appear on the live site.</span>
+        <span><strong>Map Editor:</strong> Click on any state or country to toggle it. Active regions turn green and appear on the live site.</span>
         <span id="map-active-count" style="font-weight: bold;">Loading active regions...</span>
       </div>
 
@@ -517,16 +520,17 @@
       if (inputPass === ADMIN_PASSWORD) {
         sessionStorage.setItem("yfe_admin_authenticated", "true");
         document.getElementById("admin-auth-overlay").style.display = "none";
-        showToast("✅ Admin Editor Unlocked!");
+        showToast("Admin Editor Unlocked.");
       } else {
         errorMsg.textContent = "Incorrect password. Please try again.";
         errorMsg.style.display = "block";
       }
     });
 
-    document.getElementById("btn-logout").addEventListener("click", () => {
-      sessionStorage.removeItem("yfe_admin_authenticated");
-      checkAuth();
+    // --- CANCEL CHANGES BUTTON ---
+    document.getElementById("btn-cancel-content").addEventListener("click", () => {
+      loadData();
+      showToast("Changes cancelled.");
     });
 
     // --- TOAST HELPER ---
@@ -539,7 +543,7 @@
 
     // --- LOAD ALL DYNAMIC DATA ---
     async function loadData() {
-      // 1. Site Content (About texts & Join description)
+      // 1. Site Content (About texts, Join description, Stats)
       try {
         const { data: content } = await supabaseClient.from("site_content").select("*");
         if (content) {
@@ -548,6 +552,14 @@
             if (item.key === "about_text2") document.getElementById("edit-about-text2").textContent = item.value;
             if (item.key === "about_text3") document.getElementById("edit-about-text3").textContent = item.value;
             if (item.key === "join_description") document.getElementById("join-description").textContent = item.value;
+            if (item.key === "stat1_num") document.getElementById("edit-stat1-num").textContent = item.value;
+            if (item.key === "stat1_lbl") document.getElementById("edit-stat1-lbl").textContent = item.value;
+            if (item.key === "stat2_num") document.getElementById("edit-stat2-num").textContent = item.value;
+            if (item.key === "stat2_lbl") document.getElementById("edit-stat2-lbl").textContent = item.value;
+            if (item.key === "stat3_num") document.getElementById("edit-stat3-num").textContent = item.value;
+            if (item.key === "stat3_lbl") document.getElementById("edit-stat3-lbl").textContent = item.value;
+            if (item.key === "stat4_num") document.getElementById("edit-stat4-num").textContent = item.value;
+            if (item.key === "stat4_lbl") document.getElementById("edit-stat4-lbl").textContent = item.value;
           });
         }
       } catch (err) { console.error(err); }
@@ -637,17 +649,33 @@
 
     // --- SAVE ALL CONTENT BUTTON ---
     document.getElementById("btn-save-content").addEventListener("click", async () => {
-      // 1. Save about & join texts to site_content
+      // 1. Save about, join, and stats texts to site_content
       const about1 = document.getElementById("edit-about-text1").textContent.trim();
       const about2 = document.getElementById("edit-about-text2").textContent.trim();
       const about3 = document.getElementById("edit-about-text3").textContent.trim();
       const joinDesc = document.getElementById("join-description").textContent.trim();
+      const s1Num = document.getElementById("edit-stat1-num").textContent.trim();
+      const s1Lbl = document.getElementById("edit-stat1-lbl").textContent.trim();
+      const s2Num = document.getElementById("edit-stat2-num").textContent.trim();
+      const s2Lbl = document.getElementById("edit-stat2-lbl").textContent.trim();
+      const s3Num = document.getElementById("edit-stat3-num").textContent.trim();
+      const s3Lbl = document.getElementById("edit-stat3-lbl").textContent.trim();
+      const s4Num = document.getElementById("edit-stat4-num").textContent.trim();
+      const s4Lbl = document.getElementById("edit-stat4-lbl").textContent.trim();
 
       await supabaseClient.from("site_content").upsert([
         { key: "about_text1", value: about1 },
         { key: "about_text2", value: about2 },
         { key: "about_text3", value: about3 },
-        { key: "join_description", value: joinDesc }
+        { key: "join_description", value: joinDesc },
+        { key: "stat1_num", value: s1Num },
+        { key: "stat1_lbl", value: s1Lbl },
+        { key: "stat2_num", value: s2Num },
+        { key: "stat2_lbl", value: s2Lbl },
+        { key: "stat3_num", value: s3Num },
+        { key: "stat3_lbl", value: s3Lbl },
+        { key: "stat4_num", value: s4Num },
+        { key: "stat4_lbl", value: s4Lbl }
       ]);
 
       // 2. Save active society text
@@ -666,7 +694,7 @@
         });
       }
 
-      showToast("💾 All changes saved successfully to Supabase!");
+      showToast("Changes saved successfully.");
     });
 
     // --- ORIGINAL SVG MAP WITH CLICK-TO-TOGGLE ---
@@ -807,7 +835,7 @@
       grid.innerHTML = events.map(ev => `
         <div class="glass-card event-card">
           <div class="event-admin-controls">
-            <button class="btn-delete-event" onclick="deleteEvent('${ev.id}')">🗑️ Delete</button>
+            <button class="btn-delete-event" onclick="deleteEvent('${ev.id}')">Delete</button>
           </div>
           <div style="padding-top: 1rem;">
             <div class="event-date">${ev.date}</div>
@@ -815,7 +843,7 @@
             <p class="event-description">${ev.description}</p>
           </div>
           <div class="event-footer">
-            <span>📍 ${ev.location}</span>
+            <span>Location: ${ev.location}</span>
             <span class="event-tag">${ev.tag || 'Event'}</span>
           </div>
         </div>
@@ -859,7 +887,7 @@
       } else {
         eventModal.style.display = "none";
         document.getElementById("create-event-form").reset();
-        showToast("✅ Event created successfully!");
+        showToast("Event created successfully.");
         loadEvents();
       }
     });

@@ -78,6 +78,14 @@ async function fetchSupabaseData() {
           const joinEl = document.getElementById("join-description");
           if (joinEl) joinEl.textContent = item.value;
         }
+        if (item.key === "stat1_num") { const el = document.getElementById("stat1-num"); if (el) el.textContent = item.value; }
+        if (item.key === "stat1_lbl") { const el = document.getElementById("stat1-lbl"); if (el) el.textContent = item.value; }
+        if (item.key === "stat2_num") { const el = document.getElementById("stat2-num"); if (el) el.textContent = item.value; }
+        if (item.key === "stat2_lbl") { const el = document.getElementById("stat2-lbl"); if (el) el.textContent = item.value; }
+        if (item.key === "stat3_num") { const el = document.getElementById("stat3-num"); if (el) el.textContent = item.value; }
+        if (item.key === "stat3_lbl") { const el = document.getElementById("stat3-lbl"); if (el) el.textContent = item.value; }
+        if (item.key === "stat4_num") { const el = document.getElementById("stat4-num"); if (el) el.textContent = item.value; }
+        if (item.key === "stat4_lbl") { const el = document.getElementById("stat4-lbl"); if (el) el.textContent = item.value; }
       });
       renderAboutUs();
     }
