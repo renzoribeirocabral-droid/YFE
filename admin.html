@@ -142,18 +142,14 @@
       <div class="admin-card" style="text-align: center;">
         <span class="section-badge badge-light" style="margin-bottom: 0.5rem;">AUTHENTICATION</span>
         <h2 style="font-family: var(--font-headings); font-size: 1.8rem; margin-bottom: 0.8rem; color: var(--text-light);">Admin Login</h2>
-        <p style="color: rgba(255,255,255,0.6); font-size: 0.95rem; margin-bottom: 2rem;">Sign in with your administrator credentials to manage YFE site content.</p>
+        <p style="color: rgba(255,255,255,0.6); font-size: 0.95rem; margin-bottom: 2rem;">Enter the admin password to access the dashboard.</p>
 
         <div id="login-toast" class="toast-msg toast-error"></div>
 
         <form id="login-form" class="modal-form">
           <div class="form-field">
-            <label for="login-email">Email Address</label>
-            <input type="email" id="login-email" required placeholder="admin@youthforenvironment.org" value="admin@youthforenvironment.org">
-          </div>
-          <div class="form-field">
             <label for="login-password">Password</label>
-            <input type="password" id="login-password" required placeholder="••••••••" value="AdminPassword123!">
+            <input type="password" id="login-password" required placeholder="Enter password" autocomplete="current-password">
           </div>
           <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;" id="btn-login-submit">Sign In</button>
         </form>
@@ -359,35 +355,30 @@
     let mapMarkerTemp = null;
 
     // --- AUTHENTICATION FLOW ---
-    async function initAuth() {
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (session) {
-        showDashboard(session.user);
+    const ADMIN_PASSWORD = "2444";
+
+    function initAuth() {
+      const isAuth = sessionStorage.getItem("yfe_admin_authenticated");
+      if (isAuth === "true") {
+        showDashboard();
       } else {
         showLogin();
       }
-
-      // Listen to Auth State Changes
-      supabaseClient.auth.onAuthStateChange((event, session) => {
-        if (session) {
-          showDashboard(session.user);
-        } else {
-          showLogin();
-        }
-      });
     }
 
     function showLogin() {
       document.getElementById("login-view").style.display = "block";
       document.getElementById("dashboard-view").style.display = "none";
       document.getElementById("user-status-bar").style.display = "none";
+      const passInput = document.getElementById("login-password");
+      if (passInput) passInput.value = "";
     }
 
-    function showDashboard(user) {
+    function showDashboard() {
       document.getElementById("login-view").style.display = "none";
       document.getElementById("dashboard-view").style.display = "block";
       document.getElementById("user-status-bar").style.display = "flex";
-      document.getElementById("user-email-badge").textContent = user.email;
+      document.getElementById("user-email-badge").textContent = "Admin";
 
       // Load initial dashboard data
       initAdminMap();
@@ -397,24 +388,25 @@
     }
 
     // Login Form Event Listener
-    document.getElementById("login-form").addEventListener("submit", async (e) => {
+    document.getElementById("login-form").addEventListener("submit", (e) => {
       e.preventDefault();
-      const email = document.getElementById("login-email").value.trim();
       const password = document.getElementById("login-password").value.trim();
       const toast = document.getElementById("login-toast");
 
       toast.style.display = "none";
-      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-
-      if (error) {
-        toast.textContent = "Login Failed: " + error.message;
+      if (password === ADMIN_PASSWORD) {
+        sessionStorage.setItem("yfe_admin_authenticated", "true");
+        showDashboard();
+      } else {
+        toast.textContent = "Incorrect password. Please try again.";
         toast.style.display = "block";
       }
     });
 
     // Logout Event Listener
-    document.getElementById("btn-logout").addEventListener("click", async () => {
-      await supabaseClient.auth.signOut();
+    document.getElementById("btn-logout").addEventListener("click", () => {
+      sessionStorage.removeItem("yfe_admin_authenticated");
+      showLogin();
     });
 
     // --- TAB SWITCHING ---
