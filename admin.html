@@ -3,616 +3,844 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard - Youth for Environment (YFE)</title>
+  <title>Youth for Environment (YFE) - Live Admin Editor</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="style.css">
-  <!-- SUPABASE SDK & LEAFLET MAP CDN -->
+  <!-- SUPABASE SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
-    /* Admin specific component styling */
-    .admin-body {
-      background-color: var(--bg-dark);
-      color: var(--text-light);
-      min-height: 100vh;
-    }
-    .admin-header {
+    /* Admin Editor Specific Styles */
+    .admin-top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 52px;
       background: #0D1F15;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 1.2rem 0;
-    }
-    .admin-nav {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      z-index: 9999;
       display: flex;
       align-items: center;
       justify-content: space-between;
-    }
-    .admin-tab-nav {
-      display: flex;
-      gap: 1rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      margin-bottom: 2rem;
-    }
-    .admin-tab-btn {
-      background: none;
-      border: none;
-      color: rgba(255, 255, 255, 0.6);
+      padding: 0 1.5rem;
       font-family: var(--font-sans);
-      font-size: 1.05rem;
-      font-weight: 600;
-      padding: 0.8rem 1.5rem;
-      cursor: pointer;
-      border-bottom: 3px solid transparent;
-      transition: var(--transition-smooth);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     }
-    .admin-tab-btn:hover, .admin-tab-btn.active {
-      color: var(--yfe-green-light);
-      border-bottom-color: var(--yfe-green-light);
-    }
-    .admin-card {
-      background-color: #182F22;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 20px;
-      padding: 2rem;
-      margin-bottom: 2rem;
-    }
-    .admin-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1.5rem;
+    .admin-bar-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-weight: 700;
+      color: var(--text-light);
       font-size: 0.95rem;
     }
-    .admin-table th, .admin-table td {
-      padding: 1rem;
-      text-align: left;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    .admin-pulse {
+      width: 10px;
+      height: 10px;
+      background: var(--yfe-green-light);
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 8px var(--yfe-green-light);
     }
-    .admin-table th {
-      color: var(--yfe-green-light);
-      font-weight: 700;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      letter-spacing: 1px;
+    .admin-bar-hint {
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.55);
+      margin-left: 0.5rem;
     }
-    .admin-table td {
-      color: rgba(255, 255, 255, 0.8);
+    .admin-bar-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
     }
-    .btn-danger {
-      background: #D90429;
-      color: white;
-      border: none;
-      padding: 0.4rem 0.9rem;
+    .admin-btn {
+      padding: 0.4rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
       border-radius: 8px;
       cursor: pointer;
+      border: none;
+      transition: var(--transition-smooth);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .admin-btn-save {
+      background: var(--yfe-green);
+      color: white;
+    }
+    .admin-btn-save:hover {
+      background: var(--yfe-green-light);
+    }
+    .admin-btn-subtle {
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .admin-btn-subtle:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+    }
+    /* Editable elements outline */
+    [contenteditable="true"] {
+      outline: 1.5px dashed rgba(82, 183, 136, 0.45);
+      border-radius: 6px;
+      padding: 4px;
+      transition: all 0.2s ease;
+      cursor: text;
+    }
+    [contenteditable="true"]:hover {
+      outline: 1.5px dashed var(--yfe-green-light);
+      background: rgba(82, 183, 136, 0.08);
+    }
+    [contenteditable="true"]:focus {
+      outline: 2px solid var(--yfe-green-light);
+      background: rgba(82, 183, 136, 0.12);
+    }
+    /* Map admin styling */
+    .map-svg path, .map-svg polygon, .map-svg .state {
+      cursor: pointer !important;
+    }
+    .admin-map-instruction {
+      background: rgba(45, 106, 79, 0.15);
+      border: 1px solid rgba(82, 183, 136, 0.3);
+      padding: 0.75rem 1.2rem;
+      border-radius: 12px;
+      margin-bottom: 1.2rem;
+      font-size: 0.9rem;
+      color: var(--yfe-green-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+    /* Auth Modal Overlay */
+    #admin-auth-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 20, 14, 0.92);
+      backdrop-filter: blur(14px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    /* Event card admin controls */
+    .event-admin-controls {
+      display: flex;
+      justify-content: flex-end;
+      padding: 0.8rem 1.5rem 0 1.5rem;
+      width: 100%;
+    }
+    .btn-delete-event {
+      background: rgba(239, 35, 60, 0.15);
+      border: 1px solid rgba(239, 35, 60, 0.3);
+      color: #FF8093;
+      padding: 0.3rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
       font-weight: 600;
-      font-size: 0.85rem;
+      cursor: pointer;
       transition: var(--transition-smooth);
     }
-    .btn-danger:hover {
+    .btn-delete-event:hover {
       background: #EF233C;
+      color: white;
     }
-    .toast-msg {
-      padding: 0.8rem 1.2rem;
-      border-radius: 10px;
-      margin-bottom: 1rem;
+    /* Toast Notification */
+    #admin-toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #182F22;
+      border: 1px solid var(--yfe-green-light);
+      color: white;
+      padding: 0.9rem 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+      z-index: 10001;
       display: none;
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
     }
-    .toast-success {
-      background: rgba(82, 183, 136, 0.2);
-      border: 1px solid var(--yfe-green-light);
-      color: var(--yfe-green-light);
-    }
-    .toast-error {
-      background: rgba(239, 35, 60, 0.2);
-      border: 1px solid #EF233C;
-      color: #FF8093;
-    }
-    #admin-map {
-      height: 420px;
-      width: 100%;
-      border-radius: 16px;
-      z-index: 1;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+    body.admin-body {
+      padding-top: 52px;
     }
   </style>
 </head>
 <body class="admin-body">
 
-  <!-- ADMIN HEADER -->
-  <header class="admin-header">
-    <div class="container admin-nav">
-      <a href="index.html" class="logo">
-        <img src="Logos/YFE.jpg" alt="YFE Logo">
-        <span class="logo-text">YFE Admin</span>
-      </a>
-      <div id="user-status-bar" style="display: none; align-items: center; gap: 1.5rem;">
-        <span id="user-email-badge" style="font-size: 0.9rem; color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.06); padding: 0.4rem 1rem; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1);">Admin</span>
-        <button id="btn-logout" class="btn btn-secondary" style="padding: 0.4rem 1.2rem; font-size: 0.85rem;">Logout</button>
-      </div>
-    </div>
-  </header>
-
-  <div class="container section-padding">
-
-    <!-- LOGIN VIEW -->
-    <div id="login-view" style="max-width: 440px; margin: 3rem auto 0 auto;">
-      <div class="admin-card" style="text-align: center;">
-        <span class="section-badge badge-light" style="margin-bottom: 0.5rem;">AUTHENTICATION</span>
-        <h2 style="font-family: var(--font-headings); font-size: 1.8rem; margin-bottom: 0.8rem; color: var(--text-light);">Admin Login</h2>
-        <p style="color: rgba(255,255,255,0.6); font-size: 0.95rem; margin-bottom: 2rem;">Enter the admin password to access the dashboard.</p>
-
-        <div id="login-toast" class="toast-msg toast-error"></div>
-
-        <form id="login-form" class="modal-form">
-          <div class="form-field">
-            <label for="login-password">Password</label>
-            <input type="password" id="login-password" required placeholder="Enter password" autocomplete="current-password">
-          </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;" id="btn-login-submit">Sign In</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- DASHBOARD VIEW -->
-    <div id="dashboard-view" style="display: none;">
+  <!-- AUTHENTICATION OVERLAY (PASSWORD: 2444) -->
+  <div id="admin-auth-overlay">
+    <div class="modal-card" style="max-width: 400px; width: 90%; text-align: center;">
+      <span class="section-badge badge-light" style="margin-bottom: 0.6rem;">RESTRICTED AREA</span>
+      <h3 style="font-family: var(--font-headings); font-size: 1.8rem; color: var(--text-light); margin-bottom: 0.6rem;">Admin Authentication</h3>
+      <p style="color: rgba(255,255,255,0.6); font-size: 0.95rem; margin-bottom: 1.8rem;">Enter the password to access live editing mode.</p>
       
-      <!-- DASHBOARD TAB BUTTONS -->
-      <div class="admin-tab-nav">
-        <button class="admin-tab-btn active" data-tab="map">🗺️ Mapa ("Where We Work")</button>
-        <button class="admin-tab-btn" data-tab="societies">🌱 Sociedades</button>
-        <button class="admin-tab-btn" data-tab="events">📅 Eventos</button>
-      </div>
+      <div id="auth-error-msg" style="display: none; color: #FF8093; background: rgba(239, 35, 60, 0.15); padding: 0.6rem; border-radius: 8px; margin-bottom: 1.2rem; font-size: 0.88rem; font-weight: 600;"></div>
 
-      <!-- TAB 1: MAPA -->
-      <div id="tab-pane-map" class="admin-tab-pane">
-        <div class="admin-card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
-            <div>
-              <h3 style="font-family: var(--font-headings); font-size: 1.5rem; color: var(--text-light);">Interactive Locations Map</h3>
-              <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">Click anywhere on the map to add a new location at those exact coordinates.</p>
-            </div>
-            <button id="btn-open-location-modal" class="btn btn-primary" style="font-size: 0.9rem; padding: 0.6rem 1.2rem;">+ Add Location Manually</button>
-          </div>
-
-          <div id="admin-map"></div>
-        </div>
-
-        <div class="admin-card">
-          <h3 style="font-family: var(--font-headings); font-size: 1.3rem; color: var(--text-light); margin-bottom: 1rem;">Existing Locations</h3>
-          <div style="overflow-x: auto;">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Biome</th>
-                  <th>Latitude</th>
-                  <th>Longitude</th>
-                  <th>Description</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="locations-table-body">
-                <tr><td colspan="6" style="text-align: center; color: rgba(255,255,255,0.5);">Loading locations...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- TAB 2: SOCIEDADES -->
-      <div id="tab-pane-societies" class="admin-tab-pane" style="display: none;">
-        <div class="admin-card">
-          <h3 style="font-family: var(--font-headings); font-size: 1.5rem; color: var(--text-light); margin-bottom: 0.5rem;">Edit Society Content</h3>
-          <p style="color: rgba(255,255,255,0.6); font-size: 0.95rem; margin-bottom: 2rem;">Select a society to edit its description and key achievements displayed on the website.</p>
-
-          <div id="society-toast" class="toast-msg toast-success"></div>
-
-          <div class="form-field" style="margin-bottom: 1.8rem; max-width: 400px;">
-            <label for="society-select">Select Society</label>
-            <select id="society-select">
-              <option value="YFC">Youth for Cerrado (YFC)</option>
-              <option value="YFA">Youth for Amazon (YFA)</option>
-              <option value="YFAR">Youth for Atlantic Rainforest (YFAR)</option>
-            </select>
-          </div>
-
-          <form id="society-edit-form" class="modal-form">
-            <div class="form-field">
-              <label for="society-description-input">About the Society (Description)</label>
-              <textarea id="society-description-input" rows="5" required placeholder="Enter description of the society..."></textarea>
-            </div>
-            <div class="form-field">
-              <label for="society-achievements-input">Achievements</label>
-              <textarea id="society-achievements-input" rows="5" required placeholder="Enter achievements of the society..."></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary" style="margin-top: 1rem; width: 220px;" id="btn-save-society">Save Changes</button>
-          </form>
-        </div>
-      </div>
-
-      <!-- TAB 3: EVENTOS -->
-      <div id="tab-pane-events" class="admin-tab-pane" style="display: none;">
-        <div class="admin-card">
-          <h3 style="font-family: var(--font-headings); font-size: 1.5rem; color: var(--text-light); margin-bottom: 1.5rem;">Create New Event</h3>
-
-          <div id="events-toast" class="toast-msg toast-success"></div>
-
-          <form id="create-event-form" class="modal-form" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem;">
-            <div class="form-field" style="grid-column: 1 / -1;">
-              <label for="event-title-input">Event Title</label>
-              <input type="text" id="event-title-input" required placeholder="e.g. Global Youth Climate Conference">
-            </div>
-            <div class="form-field">
-              <label for="event-date-input">Event Date</label>
-              <input type="text" id="event-date-input" required placeholder="e.g. October 15, 2026">
-            </div>
-            <div class="form-field">
-              <label for="event-location-input">Location / Platform</label>
-              <input type="text" id="event-location-input" required placeholder="e.g. Goiânia, GO or Zoom">
-            </div>
-            <div class="form-field">
-              <label for="event-tag-input">Tag / Format</label>
-              <select id="event-tag-input">
-                <option value="In-Person">In-Person</option>
-                <option value="Virtual">Virtual</option>
-                <option value="Workshop">Workshop</option>
-                <option value="Campaign">Campaign</option>
-                <option value="Conference">Conference</option>
-              </select>
-            </div>
-            <div class="form-field" style="grid-column: 1 / -1;">
-              <label for="event-desc-input">Event Description</label>
-              <textarea id="event-desc-input" rows="3" required placeholder="Enter event details and description..."></textarea>
-            </div>
-            <div style="grid-column: 1 / -1;">
-              <button type="submit" class="btn btn-primary" style="width: 200px;" id="btn-create-event">Add Event</button>
-            </div>
-          </form>
-        </div>
-
-        <div class="admin-card">
-          <h3 style="font-family: var(--font-headings); font-size: 1.3rem; color: var(--text-light); margin-bottom: 1rem;">Scheduled Events</h3>
-          <div style="overflow-x: auto;">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Date</th>
-                  <th>Location</th>
-                  <th>Tag</th>
-                  <th>Description</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="events-table-body">
-                <tr><td colspan="6" style="text-align: center; color: rgba(255,255,255,0.5);">Loading events...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ADD LOCATION MODAL -->
-  <div class="modal-overlay" id="location-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; align-items: center; justify-content: center;">
-    <div class="modal-card" style="max-width: 500px; width: 90%; position: relative;">
-      <button id="btn-close-location-modal" class="modal-close-btn">&times;</button>
-      <span class="section-badge badge-light">WHERE WE WORK</span>
-      <h3 class="modal-title" style="margin-bottom: 1.5rem;">Add Map Location</h3>
-
-      <form id="location-form" class="modal-form">
+      <form id="admin-auth-form" class="modal-form">
         <div class="form-field">
-          <label for="loc-name-input">Location Name</label>
-          <input type="text" id="loc-name-input" required placeholder="e.g. Goiânia Action Center">
+          <label for="admin-pass-input">Password</label>
+          <input type="password" id="admin-pass-input" required placeholder="Enter password" autocomplete="current-password">
         </div>
-        <div class="form-field">
-          <label for="loc-biome-input">Biome / Region</label>
-          <select id="loc-biome-input">
-            <option value="Cerrado">Cerrado</option>
-            <option value="Amazon">Amazon</option>
-            <option value="Atlantic Rainforest">Atlantic Rainforest</option>
-            <option value="Pantanal">Pantanal</option>
-            <option value="Caatinga">Caatinga</option>
-            <option value="Pampas">Pampas</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-          <div class="form-field">
-            <label for="loc-lat-input">Latitude</label>
-            <input type="number" step="any" id="loc-lat-input" required placeholder="-16.6869">
-          </div>
-          <div class="form-field">
-            <label for="loc-lng-input">Longitude</label>
-            <input type="number" step="any" id="loc-lng-input" required placeholder="-49.2648">
-          </div>
-        </div>
-        <div class="form-field">
-          <label for="loc-desc-input">Description</label>
-          <textarea id="loc-desc-input" rows="3" placeholder="Brief details about actions at this point..."></textarea>
-        </div>
-        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-          <button type="submit" class="btn btn-primary" style="flex: 1;" id="btn-save-location">Save Location</button>
-          <button type="button" class="btn btn-secondary" style="flex: 1;" id="btn-cancel-location">Cancel</button>
-        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Unlock Editor</button>
       </form>
     </div>
   </div>
 
-  <!-- SCRIPT INTEGRATION -->
+  <!-- STICKY TOP ADMIN BAR -->
+  <div class="admin-top-bar" id="admin-bar">
+    <div class="admin-bar-brand">
+      <span class="admin-pulse"></span>
+      <span>Live Website Editor</span>
+      <span class="admin-bar-hint">✏️ Click text to edit &bull; 🗺️ Click map areas to toggle</span>
+    </div>
+    <div class="admin-bar-actions">
+      <button id="btn-save-content" class="admin-btn admin-btn-save">💾 Save Content</button>
+      <a href="index.html" class="admin-btn admin-btn-subtle" target="_blank">👁️ View Site</a>
+      <button id="btn-logout" class="admin-btn admin-btn-subtle">Logout</button>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="admin-toast"></div>
+
+  <!-- HEADER & NAVIGATION (Matches index.html) -->
+  <header id="header">
+    <div class="container nav-container">
+      <a href="#" class="logo" id="logo-link">
+        <img src="Logos/YFE.jpg" alt="Youth for Environment Logo">
+        <span class="logo-text">YFE</span>
+      </a>
+      
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="#about" class="nav-link">About Us</a></li>
+        <li><a href="#societies" class="nav-link">Societies</a></li>
+        <li><a href="#map" class="nav-link">Where We Work</a></li>
+        <li><a href="#events" class="nav-link">Schedule</a></li>
+        <li><a href="#donations" class="btn btn-primary" id="header-donate-btn">Donate</a></li>
+      </ul>
+
+      <div class="burger-menu" id="burger-menu">
+        <span class="burger-bar"></span>
+        <span class="burger-bar"></span>
+        <span class="burger-bar"></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION (Identical visual to main site) -->
+  <section class="hero" id="hero">
+    <div class="hero-bg" id="hero-bg"></div>
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title" id="hero-title">Youth for <span>Environment</span></h1>
+        <p class="hero-description" id="hero-subtitle">
+          Protecting the nature that protects us.
+        </p>
+        <div class="hero-cta">
+          <a href="#join" class="btn btn-primary" id="hero-cta-join">Join the Team</a>
+          <a href="#about" class="btn btn-secondary" id="hero-cta-learn">Learn More</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS BAR SECTION -->
+  <section class="stats-bar" id="stats">
+    <div class="container stats-container">
+      <div class="stat-item">
+        <span class="stat-number">10k+</span>
+        <span class="stat-label">Trees Planted</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-number">3+</span>
+        <span class="stat-label">Local Biomes</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-number">2,000+</span>
+        <span class="stat-label">Youth Leaders</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT US SECTION (EDITABLE TEXTS) -->
+  <section class="section-padding" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-text-column">
+          <span class="section-badge">WHO WE ARE</span>
+          <h2 class="section-title">Rooted in Youth.<br>Driven by Purpose.</h2>
+          
+          <div class="about-text" id="about-content">
+            <p id="edit-about-text1" contenteditable="true" title="Click to edit">
+              Youth for Environment is a global youth-led movement that began in Brazil with the mission of empowering young people to protect their local biomes while participating in environmental governance and climate action.
+            </p>
+            <p id="edit-about-text2" contenteditable="true" title="Click to edit">
+              Through reforestation initiatives, awareness campaigns, and youth-led policy discussions, we connect local environmental challenges to the global climate crisis.
+            </p>
+            <p id="edit-about-text3" contenteditable="true" title="Click to edit">
+              We believe the generation most affected by climate change must also help shape the decisions surrounding it. That’s why we work to ensure young people are not just future leaders, but active voices.
+            </p>
+          </div>
+          
+          <div class="about-features">
+            <div class="feature-item">
+              <div class="feature-header">
+                <span class="feature-title">Ecological Biome Restoration</span>
+                <span class="feature-val">85%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 85%"></div>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-header">
+                <span class="feature-title">Youth Engagement & Governance</span>
+                <span class="feature-val">95%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 95%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="about-image-wrapper">
+          <img src="Logos/YFE.jpg" alt="Reforestation Youth for Environment" class="about-image" id="about-img">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUR SOCIETIES SECTION (EDITABLE TEXTS) -->
+  <section class="section-padding dark-section" id="societies">
+    <div class="container">
+      <div class="center-badge-wrapper">
+        <span class="section-badge badge-light">AREAS OF ACTION</span>
+      </div>
+      <h2 class="section-title">Our Societies</h2>
+      <p class="section-subtitle">Select a local society to explore and edit its achievements and action.</p>
+
+      <div class="societies-container">
+        <!-- Navegação de Sociedades -->
+        <div class="societies-nav" id="societies-nav">
+          <button class="society-btn active" data-society="YFC" id="btn-society-yfc">
+            <img src="Logos/YFC.png" alt="Youth for Cerrado Logo">
+            <span>Youth for Cerrado</span>
+          </button>
+          <button class="society-btn" data-society="YFA" id="btn-society-yfa">
+            <img src="Logos/YFA.jpg" alt="Youth for Amazon Logo">
+            <span>Youth for Amazon</span>
+          </button>
+          <button class="society-btn" data-society="YFAR" id="btn-society-yfar">
+            <img src="Logos/YFAR.jpg" alt="Youth for Atlantic Rainforest Logo">
+            <span>Youth for Atlantic Rainforest</span>
+          </button>
+        </div>
+
+        <!-- Exibição de Conteúdo da Sociedade Ativa (EDITABLE) -->
+        <div class="society-content-display glass-card">
+          <div class="society-tabs">
+            <button class="tab-link active" data-tab="about" id="tab-society-about">About the Society</button>
+            <button class="tab-link" data-tab="achievements" id="tab-society-achievements">Achievements</button>
+          </div>
+
+          <div class="tab-content">
+            <div class="tab-pane active" id="pane-about">
+              <p id="society-about-text" contenteditable="true" title="Click to edit about text">Loading society information...</p>
+            </div>
+            <div class="tab-pane" id="pane-achievements">
+              <p id="society-achievements-text" contenteditable="true" title="Click to edit achievements">Loading achievements...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAP SECTION (CLICK AREA TO SELECT/DESELECT) -->
+  <section class="section-padding gray-section" id="map">
+    <div class="container">
+      <div class="center-badge-wrapper">
+        <span class="section-badge">WHERE WE WORK</span>
+      </div>
+      <h2 class="section-title">Where We Work</h2>
+      <p class="section-subtitle">Manage active regions on the original map. Green areas are visible on the main site.</p>
+
+      <div class="admin-map-instruction">
+        <span>📍 <strong>Map Editor:</strong> Click on any state or country to toggle it. Active regions turn green and appear on the live site.</span>
+        <span id="map-active-count" style="font-weight: bold;">Loading active regions...</span>
+      </div>
+
+      <div class="map-wrapper">
+        <div class="map-container" id="map-container">
+          <div style="text-align: center; padding: 3rem; color: var(--text-muted);" id="map-loading">
+            Loading interactive map...
+          </div>
+        </div>
+        <div class="map-tooltip" id="map-tooltip">Tooltip</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOIN THE TEAM SECTION (EDITABLE TEXT) -->
+  <section class="section-padding dark-section" id="join">
+    <div class="container">
+      <div class="glass-card join-banner">
+        <span class="section-badge badge-light">GET INVOLVED</span>
+        <h3>Join Our Network</h3>
+        <p id="join-description" contenteditable="true" title="Click to edit join text">
+          Join one of our numerous societies across different regions and countries around the world, or start your own and bring the movement to your community. Through reforestation projects, awareness campaigns, environmental advocacy, and youth-led action, our societies connect local biome preservation to the global fight against climate change.
+        </p>
+        <button class="btn btn-primary btn-gold" id="btn-open-form">Apply to Join a Society</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVENTS SECTION (EDITABLE & ADD/DELETE) -->
+  <section class="section-padding dark-section" id="events">
+    <div class="container">
+      <div class="center-badge-wrapper">
+        <span class="section-badge badge-light">SCHEDULE</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 2rem;">
+        <div>
+          <h2 class="section-title" style="margin-bottom: 0.5rem;">Events & Actions</h2>
+          <p class="section-subtitle" style="margin-bottom: 0;">Add, edit, or delete scheduled actions shown on the site.</p>
+        </div>
+        <button id="btn-open-event-modal" class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;">+ Add New Event</button>
+      </div>
+
+      <div class="events-grid" id="events-grid">
+        <!-- Dynamically rendered with edit/delete functions -->
+      </div>
+    </div>
+  </section>
+
+  <!-- CREATE EVENT MODAL -->
+  <div class="modal-overlay" id="event-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; align-items: center; justify-content: center;">
+    <div class="modal-card" style="max-width: 500px; width: 90%; position: relative;">
+      <button id="btn-close-event-modal" class="modal-close-btn">&times;</button>
+      <span class="section-badge badge-light">SCHEDULE</span>
+      <h3 class="modal-title" style="margin-bottom: 1.5rem;">Add New Event</h3>
+
+      <form id="create-event-form" class="modal-form">
+        <div class="form-field">
+          <label for="event-title-input">Title</label>
+          <input type="text" id="event-title-input" required placeholder="e.g. Tree Planting Day">
+        </div>
+        <div class="form-field">
+          <label for="event-date-input">Date</label>
+          <input type="text" id="event-date-input" required placeholder="e.g. October 15, 2026">
+        </div>
+        <div class="form-field">
+          <label for="event-location-input">Location</label>
+          <input type="text" id="event-location-input" required placeholder="e.g. Goiânia, GO or Zoom">
+        </div>
+        <div class="form-field">
+          <label for="event-tag-input">Format / Type</label>
+          <select id="event-tag-input">
+            <option value="In-Person">In-Person</option>
+            <option value="Virtual">Virtual</option>
+            <option value="Workshop">Workshop</option>
+            <option value="Campaign">Campaign</option>
+            <option value="Conference">Conference</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="event-desc-input">Description</label>
+          <textarea id="event-desc-input" rows="3" required placeholder="Details about this action..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Save Event</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+      <div style="margin-bottom: 3rem;">
+        <h4 class="footer-title">Contact & Socials</h4>
+        <ul class="footer-links" style="align-items: center;">
+          <li>Instagram: <a href="https://www.instagram.com/youthforenvironmentorg?igsh=a2Y4cmY1eTV2d2tx" target="_blank" rel="noopener noreferrer" style="color: var(--yfe-green-light); word-break: break-all;" id="footer-instagram">@youthforenvironmentorg</a></li>
+          <li>Email: <a href="mailto:contato@youthforenvironment.org" id="footer-email">contact@youthforenvironment.org</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-bottom" style="width: 100%; justify-content: center;">
+        <p>&copy; 2026 Youth for Environment (YFE). All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="map-data.js"></script>
   <script>
-    // Supabase Configuration
+    // --- SUPABASE CLIENT ---
     const SUPABASE_URL = "https://jihhwwjtzdxatbhelqiy.supabase.co";
     const SUPABASE_KEY = "sb_publishable_nHW4cG5wcI9bMEj3gmUHrw_MPGdYnGK";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let adminMap = null;
-    let mapMarkerTemp = null;
-
-    // --- AUTHENTICATION FLOW ---
     const ADMIN_PASSWORD = "2444";
 
-    function initAuth() {
+    let activeSociety = "YFC";
+    let activeTab = "about";
+    let siteSocieties = {};
+    let activeRegionsSet = new Set();
+
+    // --- AUTHENTICATION FLOW (PASSWORD: 2444) ---
+    function checkAuth() {
       const isAuth = sessionStorage.getItem("yfe_admin_authenticated");
+      const overlay = document.getElementById("admin-auth-overlay");
+      const passInput = document.getElementById("admin-pass-input");
+
       if (isAuth === "true") {
-        showDashboard();
+        overlay.style.display = "none";
       } else {
-        showLogin();
+        overlay.style.display = "flex";
+        if (passInput) passInput.value = "";
       }
     }
 
-    function showLogin() {
-      document.getElementById("login-view").style.display = "block";
-      document.getElementById("dashboard-view").style.display = "none";
-      document.getElementById("user-status-bar").style.display = "none";
-      const passInput = document.getElementById("login-password");
-      if (passInput) passInput.value = "";
+    document.getElementById("admin-auth-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const inputPass = document.getElementById("admin-pass-input").value.trim();
+      const errorMsg = document.getElementById("auth-error-msg");
+
+      if (inputPass === ADMIN_PASSWORD) {
+        sessionStorage.setItem("yfe_admin_authenticated", "true");
+        document.getElementById("admin-auth-overlay").style.display = "none";
+        showToast("✅ Admin Editor Unlocked!");
+      } else {
+        errorMsg.textContent = "Incorrect password. Please try again.";
+        errorMsg.style.display = "block";
+      }
+    });
+
+    document.getElementById("btn-logout").addEventListener("click", () => {
+      sessionStorage.removeItem("yfe_admin_authenticated");
+      checkAuth();
+    });
+
+    // --- TOAST HELPER ---
+    function showToast(message) {
+      const toast = document.getElementById("admin-toast");
+      toast.textContent = message;
+      toast.style.display = "block";
+      setTimeout(() => { toast.style.display = "none"; }, 3500);
     }
 
-    function showDashboard() {
-      document.getElementById("login-view").style.display = "none";
-      document.getElementById("dashboard-view").style.display = "block";
-      document.getElementById("user-status-bar").style.display = "flex";
-      document.getElementById("user-email-badge").textContent = "Admin";
+    // --- LOAD ALL DYNAMIC DATA ---
+    async function loadData() {
+      // 1. Site Content (About texts & Join description)
+      try {
+        const { data: content } = await supabaseClient.from("site_content").select("*");
+        if (content) {
+          content.forEach(item => {
+            if (item.key === "about_text1") document.getElementById("edit-about-text1").textContent = item.value;
+            if (item.key === "about_text2") document.getElementById("edit-about-text2").textContent = item.value;
+            if (item.key === "about_text3") document.getElementById("edit-about-text3").textContent = item.value;
+            if (item.key === "join_description") document.getElementById("join-description").textContent = item.value;
+          });
+        }
+      } catch (err) { console.error(err); }
 
-      // Load initial dashboard data
-      initAdminMap();
-      loadLocations();
-      loadSocietyForEditing();
+      // 2. Societies
+      try {
+        const { data: societies } = await supabaseClient.from("societies").select("*");
+        if (societies) {
+          societies.forEach(soc => {
+            siteSocieties[soc.id] = {
+              name: soc.name,
+              about: soc.description || "",
+              achievements: soc.achievements || ""
+            };
+          });
+          renderSocietyTab();
+        }
+      } catch (err) { console.error(err); }
+
+      // 3. Active Regions
+      try {
+        const { data: regions } = await supabaseClient.from("active_regions").select("*");
+        activeRegionsSet.clear();
+        if (regions) {
+          regions.forEach(r => activeRegionsSet.add(r.id));
+        }
+        updateActiveCountDisplay();
+        highlightActiveMapRegions();
+      } catch (err) { console.error(err); }
+
+      // 4. Events
       loadEvents();
     }
 
-    // Login Form Event Listener
-    document.getElementById("login-form").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const password = document.getElementById("login-password").value.trim();
-      const toast = document.getElementById("login-toast");
+    // --- SOCIETIES EDITING ---
+    function renderSocietyTab() {
+      const soc = siteSocieties[activeSociety] || {};
+      const aboutEl = document.getElementById("society-about-text");
+      const achEl = document.getElementById("society-achievements-text");
 
-      toast.style.display = "none";
-      if (password === ADMIN_PASSWORD) {
-        sessionStorage.setItem("yfe_admin_authenticated", "true");
-        showDashboard();
-      } else {
-        toast.textContent = "Incorrect password. Please try again.";
-        toast.style.display = "block";
-      }
-    });
-
-    // Logout Event Listener
-    document.getElementById("btn-logout").addEventListener("click", () => {
-      sessionStorage.removeItem("yfe_admin_authenticated");
-      showLogin();
-    });
-
-    // --- TAB SWITCHING ---
-    document.querySelectorAll(".admin-tab-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".admin-tab-btn").forEach(b => b.classList.remove("active"));
-        document.querySelectorAll(".admin-tab-pane").forEach(p => p.style.display = "none");
-
-        btn.classList.add("active");
-        const tab = btn.getAttribute("data-tab");
-        document.getElementById(`tab-pane-${tab}`).style.display = "block";
-
-        if (tab === "map" && adminMap) {
-          setTimeout(() => adminMap.invalidateSize(), 200);
-        }
-      });
-    });
-
-    // --- TAB 1: MAP & LOCATIONS ---
-    function initAdminMap() {
-      if (adminMap) return;
-
-      adminMap = L.map("admin-map", {
-        center: [-14.235, -51.925],
-        zoom: 4
-      });
-
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap &copy; CARTO',
-        maxZoom: 19
-      }).addTo(adminMap);
-
-      // Map Click Event -> Open Modal pre-filled with lat/lng
-      adminMap.on("click", (e) => {
-        const lat = e.latlng.lat.toFixed(4);
-        const lng = e.latlng.lng.toFixed(4);
-
-        document.getElementById("loc-lat-input").value = lat;
-        document.getElementById("loc-lng-input").value = lng;
-        document.getElementById("loc-name-input").value = "";
-        document.getElementById("loc-desc-input").value = "";
-
-        openLocationModal();
-      });
+      if (aboutEl) aboutEl.textContent = soc.about || "";
+      if (achEl) achEl.textContent = soc.achievements || "";
     }
 
-    async function loadLocations() {
-      const tbody = document.getElementById("locations-table-body");
-      const { data, error } = await supabaseClient.from("locations").select("*").order("created_at", { ascending: false });
+    // Listen to changes in society contenteditable texts
+    document.getElementById("society-about-text").addEventListener("blur", () => {
+      if (!siteSocieties[activeSociety]) siteSocieties[activeSociety] = {};
+      siteSocieties[activeSociety].about = document.getElementById("society-about-text").textContent.trim();
+    });
 
-      if (error || !data) {
-        tbody.innerHTML = `<tr><td colspan="6" style="color: #EF233C;">Error loading locations: ${error ? error.message : ''}</td></tr>`;
-        return;
-      }
+    document.getElementById("society-achievements-text").addEventListener("blur", () => {
+      if (!siteSocieties[activeSociety]) siteSocieties[activeSociety] = {};
+      siteSocieties[activeSociety].achievements = document.getElementById("society-achievements-text").textContent.trim();
+    });
 
-      if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: rgba(255,255,255,0.5);">No locations found. Click on the map to add one!</td></tr>`;
-      } else {
-        tbody.innerHTML = data.map(loc => `
-          <tr>
-            <td><strong>${loc.name}</strong></td>
-            <td><span style="color: var(--yfe-green-light);">${loc.biome || '-'}</span></td>
-            <td>${loc.latitude}</td>
-            <td>${loc.longitude}</td>
-            <td>${loc.description || '-'}</td>
-            <td>
-              <button class="btn-danger" onclick="deleteLocation('${loc.id}')">Delete</button>
-            </td>
-          </tr>
-        `).join("");
-      }
-
-      // Update markers on Admin Map
-      if (adminMap) {
-        adminMap.eachLayer((layer) => {
-          if (layer instanceof L.Marker) {
-            adminMap.removeLayer(layer);
+    function setupSocietiesNav() {
+      const buttons = document.querySelectorAll(".society-btn");
+      buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          // Save current active tab text before switching
+          if (siteSocieties[activeSociety]) {
+            siteSocieties[activeSociety].about = document.getElementById("society-about-text").textContent.trim();
+            siteSocieties[activeSociety].achievements = document.getElementById("society-achievements-text").textContent.trim();
           }
-        });
 
-        const icon = L.divIcon({
-          className: 'admin-map-pin',
-          html: `<div style="background: #2D6A4F; width: 26px; height: 26px; border-radius: 50%; border: 2px solid #FFF; display: flex; align-items: center; justify-content: center; color: white; font-size: 13px;">🌱</div>`,
-          iconSize: [26, 26],
-          iconAnchor: [13, 13]
+          buttons.forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          activeSociety = btn.getAttribute("data-society");
+          renderSocietyTab();
         });
+      });
 
-        data.forEach(loc => {
-          if (loc.latitude && loc.longitude) {
-            L.marker([loc.latitude, loc.longitude], { icon }).addTo(adminMap)
-              .bindPopup(`<b>${loc.name}</b><br/>${loc.biome || ''}`);
-          }
+      const tabLinks = document.querySelectorAll(".tab-link");
+      tabLinks.forEach(link => {
+        link.addEventListener("click", () => {
+          tabLinks.forEach(t => t.classList.remove("active"));
+          link.classList.add("active");
+          
+          const tab = link.getAttribute("data-tab");
+          document.querySelectorAll(".tab-pane").forEach(pane => pane.classList.remove("active"));
+          document.getElementById(`pane-${tab}`).classList.add("active");
+          activeTab = tab;
+          renderSocietyTab();
         });
-      }
+      });
     }
 
-    async function deleteLocation(id) {
-      if (!confirm("Are you sure you want to delete this location?")) return;
-      const { error } = await supabaseClient.from("locations").delete().eq("id", id);
-      if (error) {
-        alert("Error deleting location: " + error.message);
-      } else {
-        loadLocations();
-      }
-    }
+    // --- SAVE ALL CONTENT BUTTON ---
+    document.getElementById("btn-save-content").addEventListener("click", async () => {
+      // 1. Save about & join texts to site_content
+      const about1 = document.getElementById("edit-about-text1").textContent.trim();
+      const about2 = document.getElementById("edit-about-text2").textContent.trim();
+      const about3 = document.getElementById("edit-about-text3").textContent.trim();
+      const joinDesc = document.getElementById("join-description").textContent.trim();
 
-    // Modal Handlers
-    const locModal = document.getElementById("location-modal");
-    function openLocationModal() { locModal.style.display = "flex"; }
-    function closeLocationModal() { locModal.style.display = "none"; }
-
-    document.getElementById("btn-open-location-modal").addEventListener("click", openLocationModal);
-    document.getElementById("btn-close-location-modal").addEventListener("click", closeLocationModal);
-    document.getElementById("btn-cancel-location").addEventListener("click", closeLocationModal);
-
-    document.getElementById("location-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const name = document.getElementById("loc-name-input").value.trim();
-      const biome = document.getElementById("loc-biome-input").value;
-      const latitude = parseFloat(document.getElementById("loc-lat-input").value);
-      const longitude = parseFloat(document.getElementById("loc-lng-input").value);
-      const description = document.getElementById("loc-desc-input").value.trim();
-
-      const { error } = await supabaseClient.from("locations").insert([
-        { name, biome, latitude, longitude, description }
+      await supabaseClient.from("site_content").upsert([
+        { key: "about_text1", value: about1 },
+        { key: "about_text2", value: about2 },
+        { key: "about_text3", value: about3 },
+        { key: "join_description", value: joinDesc }
       ]);
 
-      if (error) {
-        alert("Error saving location: " + error.message);
-      } else {
-        closeLocationModal();
-        loadLocations();
+      // 2. Save active society text
+      if (siteSocieties[activeSociety]) {
+        siteSocieties[activeSociety].about = document.getElementById("society-about-text").textContent.trim();
+        siteSocieties[activeSociety].achievements = document.getElementById("society-achievements-text").textContent.trim();
       }
+
+      // Upsert all societies
+      for (const [id, s] of Object.entries(siteSocieties)) {
+        await supabaseClient.from("societies").upsert({
+          id: id,
+          name: s.name || id,
+          description: s.about,
+          achievements: s.achievements
+        });
+      }
+
+      showToast("💾 All changes saved successfully to Supabase!");
     });
 
-    // --- TAB 2: SOCIEDADES ---
-    const societySelect = document.getElementById("society-select");
-    societySelect.addEventListener("change", () => {
-      loadSocietyForEditing();
-    });
+    // --- ORIGINAL SVG MAP WITH CLICK-TO-TOGGLE ---
+    async function loadInteractiveMap() {
+      const mapContainer = document.getElementById("map-container");
+      if (!mapContainer) return;
 
-    async function loadSocietyForEditing() {
-      const societyId = societySelect.value;
-      const descInput = document.getElementById("society-description-input");
-      const achInput = document.getElementById("society-achievements-input");
+      try {
+        let worldRes, brazilRes;
+        
+        if (typeof MAP_DATA !== "undefined") {
+          worldRes = MAP_DATA.WORLD_MAP_SVG;
+          brazilRes = MAP_DATA.BRAZIL_STATES_SVG;
+        } else {
+          const [wText, bText] = await Promise.all([
+            fetch("world-map.svg").then(r => r.text()),
+            fetch("brazil-states.svg").then(r => r.text())
+          ]);
+          worldRes = wText;
+          brazilRes = bText;
+        }
 
-      const { data, error } = await supabaseClient.from("societies").select("*").eq("id", societyId).single();
+        mapContainer.innerHTML = "";
 
-      if (!error && data) {
-        descInput.value = data.description || "";
-        achInput.value = data.achievements || "";
+        const parser = new DOMParser();
+        const worldDoc = parser.parseFromString(worldRes, "image/svg+xml");
+        const worldSvg = worldDoc.querySelector("svg");
+        worldSvg.setAttribute("class", "map-svg");
+        worldSvg.setAttribute("id", "interactive-world-map");
+        mapContainer.appendChild(worldSvg);
+
+        const brazilDoc = parser.parseFromString(brazilRes, "image/svg+xml");
+        const styleEl = brazilDoc.querySelector("style");
+        if (styleEl) styleEl.remove();
+
+        const originalBrPath = worldSvg.querySelector("#br");
+        if (originalBrPath) {
+          const bbox = originalBrPath.getBBox();
+          const brGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+          brGroup.setAttribute("id", "brazil-states-group");
+
+          const states = brazilDoc.querySelectorAll(".state");
+          states.forEach(state => {
+            state.setAttribute("stroke", "#FFFFFF");
+            state.setAttribute("stroke-width", "0.8");
+            brGroup.appendChild(state.cloneNode(true));
+          });
+
+          const scaleX = bbox.width / 353.845;
+          const scaleY = bbox.height / 367.766;
+          brGroup.setAttribute("transform", `translate(${bbox.x}, ${bbox.y}) scale(${scaleX}, ${scaleY})`);
+          originalBrPath.parentNode.replaceChild(brGroup, originalBrPath);
+        }
+
+        highlightActiveMapRegions();
+        setupMapAdminClickHandlers();
+
+      } catch (error) {
+        console.error("Error loading interactive map:", error);
       }
     }
 
-    document.getElementById("society-edit-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const societyId = societySelect.value;
-      const description = document.getElementById("society-description-input").value.trim();
-      const achievements = document.getElementById("society-achievements-input").value.trim();
-      const toast = document.getElementById("society-toast");
-
-      const { error } = await supabaseClient.from("societies").upsert({
-        id: societyId,
-        name: societySelect.options[societySelect.selectedIndex].text,
-        description,
-        achievements
-      });
-
-      if (error) {
-        toast.className = "toast-msg toast-error";
-        toast.textContent = "Error saving society: " + error.message;
-      } else {
-        toast.className = "toast-msg toast-success";
-        toast.textContent = "✅ Society content updated successfully!";
+    function updateActiveCountDisplay() {
+      const el = document.getElementById("map-active-count");
+      if (el) {
+        el.textContent = `${activeRegionsSet.size} active region${activeRegionsSet.size === 1 ? '' : 's'}`;
       }
-      toast.style.display = "block";
-      setTimeout(() => { toast.style.display = "none"; }, 4000);
-    });
+    }
 
-    // --- TAB 3: EVENTOS ---
+    function highlightActiveMapRegions() {
+      const mapContainer = document.getElementById("map-container");
+      if (!mapContainer) return;
+
+      mapContainer.querySelectorAll(".map-svg path, .map-svg polygon, .map-svg .state, .map-svg g").forEach(el => {
+        let id = el.id;
+        if (!id) return;
+        if (id.length === 2 && el.classList.contains("state")) {
+          id = `BR-${id}`;
+        }
+
+        if (activeRegionsSet.has(id) || activeRegionsSet.has(el.id)) {
+          el.classList.add("active-region");
+        } else {
+          el.classList.remove("active-region");
+        }
+      });
+    }
+
+    function setupMapAdminClickHandlers() {
+      const mapContainer = document.getElementById("map-container");
+      if (!mapContainer) return;
+
+      const elements = mapContainer.querySelectorAll(".map-svg path, .map-svg polygon, .map-svg .state");
+
+      elements.forEach(el => {
+        el.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          let regionId = el.id;
+          if (!regionId) return;
+          if (regionId.length === 2 && el.classList.contains("state")) {
+            regionId = `BR-${regionId}`;
+          }
+
+          if (activeRegionsSet.has(regionId)) {
+            // Remove from active
+            activeRegionsSet.delete(regionId);
+            el.classList.remove("active-region");
+            await supabaseClient.from("active_regions").delete().eq("id", regionId);
+            showToast(`Region "${regionId}" deselected`);
+          } else {
+            // Add to active
+            activeRegionsSet.add(regionId);
+            el.classList.add("active-region");
+            await supabaseClient.from("active_regions").upsert({ id: regionId, name: regionId });
+            showToast(`Region "${regionId}" activated!`);
+          }
+
+          updateActiveCountDisplay();
+        });
+      });
+    }
+
+    // --- EVENTS MANAGEMENT ---
     async function loadEvents() {
-      const tbody = document.getElementById("events-table-body");
-      const { data, error } = await supabaseClient.from("events").select("*").order("created_at", { ascending: false });
+      const grid = document.getElementById("events-grid");
+      const { data: events, error } = await supabaseClient.from("events").select("*").order("created_at", { ascending: false });
 
-      if (error || !data) {
-        tbody.innerHTML = `<tr><td colspan="6" style="color: #EF233C;">Error loading events: ${error ? error.message : ''}</td></tr>`;
+      if (error || !events) {
+        grid.innerHTML = `<p style="color: #FF8093;">Error loading events.</p>`;
         return;
       }
 
-      if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: rgba(255,255,255,0.5);">No scheduled events found.</td></tr>`;
+      if (events.length === 0) {
+        grid.innerHTML = `<p style="color: rgba(255,255,255,0.5); grid-column: 1/-1; text-align: center;">No scheduled events. Click "+ Add New Event" above to create one!</p>`;
+        return;
+      }
+
+      grid.innerHTML = events.map(ev => `
+        <div class="glass-card event-card">
+          <div class="event-admin-controls">
+            <button class="btn-delete-event" onclick="deleteEvent('${ev.id}')">🗑️ Delete</button>
+          </div>
+          <div style="padding-top: 1rem;">
+            <div class="event-date">${ev.date}</div>
+            <h3 class="event-title">${ev.title}</h3>
+            <p class="event-description">${ev.description}</p>
+          </div>
+          <div class="event-footer">
+            <span>📍 ${ev.location}</span>
+            <span class="event-tag">${ev.tag || 'Event'}</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    async function deleteEvent(id) {
+      if (!confirm("Are you sure you want to delete this event?")) return;
+      const { error } = await supabaseClient.from("events").delete().eq("id", id);
+      if (error) {
+        alert("Error deleting event: " + error.message);
       } else {
-        tbody.innerHTML = data.map(ev => `
-          <tr>
-            <td><strong>${ev.title}</strong></td>
-            <td>${ev.date}</td>
-            <td>${ev.location}</td>
-            <td><span class="event-tag">${ev.tag || 'Event'}</span></td>
-            <td>${ev.description}</td>
-            <td>
-              <button class="btn-danger" onclick="deleteEvent('${ev.id}')">Delete</button>
-            </td>
-          </tr>
-        `).join("");
+        showToast("Event deleted successfully");
+        loadEvents();
       }
     }
+
+    // Event Modal controls
+    const eventModal = document.getElementById("event-modal");
+    document.getElementById("btn-open-event-modal").addEventListener("click", () => {
+      eventModal.style.display = "flex";
+    });
+    document.getElementById("btn-close-event-modal").addEventListener("click", () => {
+      eventModal.style.display = "none";
+    });
 
     document.getElementById("create-event-form").addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -622,38 +850,47 @@
       const tag = document.getElementById("event-tag-input").value;
       const description = document.getElementById("event-desc-input").value.trim();
 
-      const toast = document.getElementById("events-toast");
-
       const { error } = await supabaseClient.from("events").insert([
         { title, date, location, tag, description }
       ]);
 
       if (error) {
-        toast.className = "toast-msg toast-error";
-        toast.textContent = "Error adding event: " + error.message;
-        toast.style.display = "block";
+        alert("Error creating event: " + error.message);
       } else {
-        toast.className = "toast-msg toast-success";
-        toast.textContent = "✅ New event added successfully!";
-        toast.style.display = "block";
+        eventModal.style.display = "none";
         document.getElementById("create-event-form").reset();
+        showToast("✅ Event created successfully!");
         loadEvents();
-        setTimeout(() => { toast.style.display = "none"; }, 4000);
       }
     });
 
-    async function deleteEvent(id) {
-      if (!confirm("Are you sure you want to delete this event?")) return;
-      const { error } = await supabaseClient.from("events").delete().eq("id", id);
-      if (error) {
-        alert("Error deleting event: " + error.message);
-      } else {
-        loadEvents();
-      }
+    // --- BURGER MENU & HEADER SCROLL ---
+    function setupHeaderScroll() {
+      const header = document.getElementById("header");
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 50) header.classList.add("scrolled");
+        else header.classList.remove("scrolled");
+      });
     }
 
-    // Initialize Auth state on page load
-    document.addEventListener("DOMContentLoaded", initAuth);
+    function setupBurgerMenu() {
+      const burger = document.getElementById("burger-menu");
+      const menu = document.getElementById("nav-menu");
+      burger.addEventListener("click", () => {
+        menu.classList.toggle("open");
+        burger.classList.toggle("toggle");
+      });
+    }
+
+    // --- INITIALIZE ON DOM LOAD ---
+    document.addEventListener("DOMContentLoaded", () => {
+      checkAuth();
+      setupHeaderScroll();
+      setupBurgerMenu();
+      setupSocietiesNav();
+      loadData();
+      loadInteractiveMap();
+    });
   </script>
 </body>
 </html>

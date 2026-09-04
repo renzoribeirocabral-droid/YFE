@@ -66,7 +66,26 @@ let activeTab = "about";
 async function fetchSupabaseData() {
   if (!supabaseClient) return;
 
-  // 1. Fetch Societies from Supabase
+  // 1. Fetch Site Content (About texts & Join description)
+  try {
+    const { data: contentData, error: contentErr } = await supabaseClient.from("site_content").select("*");
+    if (!contentErr && contentData && contentData.length > 0) {
+      contentData.forEach(item => {
+        if (item.key === "about_text1") siteData.about.text1 = item.value;
+        if (item.key === "about_text2") siteData.about.text2 = item.value;
+        if (item.key === "about_text3") siteData.about.text3 = item.value;
+        if (item.key === "join_description") {
+          const joinEl = document.getElementById("join-description");
+          if (joinEl) joinEl.textContent = item.value;
+        }
+      });
+      renderAboutUs();
+    }
+  } catch (err) {
+    console.error("Error fetching site content:", err);
+  }
+
+  // 2. Fetch Societies from Supabase
   try {
     const { data: socData, error: socError } = await supabaseClient.from("societies").select("*");
     if (!socError && socData && socData.length > 0) {
@@ -83,7 +102,7 @@ async function fetchSupabaseData() {
     console.error("Error fetching societies from Supabase:", err);
   }
 
-  // 2. Fetch Events from Supabase
+  // 3. Fetch Events from Supabase
   try {
     const { data: evData, error: evError } = await supabaseClient.from("events").select("*").order("created_at", { ascending: false });
     if (!evError && evData && evData.length > 0) {
@@ -99,6 +118,20 @@ async function fetchSupabaseData() {
     }
   } catch (err) {
     console.error("Error fetching events from Supabase:", err);
+  }
+
+  // 4. Fetch Active Regions for the Map from Supabase
+  try {
+    const { data: regData, error: regErr } = await supabaseClient.from("active_regions").select("*");
+    if (!regErr && regData && regData.length > 0) {
+      siteData.map.activeRegions = {};
+      regData.forEach(reg => {
+        siteData.map.activeRegions[reg.id] = { actions: 1, area: reg.name || reg.id };
+      });
+      highlightActiveMapRegions();
+    }
+  } catch (err) {
+    console.error("Error fetching active regions:", err);
   }
 }
 
@@ -177,121 +210,126 @@ function setupSocietiesNav() {
 
 // --- SVG MAP INTEGRATION & ALIGNMENT ---
 
-let mainMapInstance = null;
-
 async function loadInteractiveMap() {
   const mapContainer = document.getElementById("map-container");
   if (!mapContainer) return;
 
-  // Render Leaflet Map if L library is loaded
-  if (typeof L !== 'undefined') {
-    mapContainer.style.height = "500px";
-    mapContainer.style.width = "100%";
-    mapContainer.style.borderRadius = "20px";
-    mapContainer.style.overflow = "hidden";
-    mapContainer.style.position = "relative";
-    mapContainer.style.zIndex = "1";
+  try {
+    let worldRes, brazilRes;
+    
+    if (typeof MAP_DATA !== "undefined") {
+      worldRes = MAP_DATA.WORLD_MAP_SVG;
+      brazilRes = MAP_DATA.BRAZIL_STATES_SVG;
+    } else {
+      const [wText, bText] = await Promise.all([
+        fetch("world-map.svg").then(r => r.text()),
+        fetch("brazil-states.svg").then(r => r.text())
+      ]);
+      worldRes = wText;
+      brazilRes = bText;
+    }
 
-    if (!mainMapInstance) {
-      mapContainer.innerHTML = "";
-      mainMapInstance = L.map("map-container", {
-        center: [-14.235, -51.925],
-        zoom: 4,
-        zoomControl: true,
-        scrollWheelZoom: false
+    mapContainer.innerHTML = "";
+
+    const parser = new DOMParser();
+    const worldDoc = parser.parseFromString(worldRes, "image/svg+xml");
+    const worldSvg = worldDoc.querySelector("svg");
+    worldSvg.setAttribute("class", "map-svg");
+    worldSvg.setAttribute("id", "interactive-world-map");
+    mapContainer.appendChild(worldSvg);
+
+    const brazilDoc = parser.parseFromString(brazilRes, "image/svg+xml");
+    const styleEl = brazilDoc.querySelector("style");
+    if (styleEl) styleEl.remove();
+
+    const originalBrPath = worldSvg.querySelector("#br");
+    if (originalBrPath) {
+      const bbox = originalBrPath.getBBox();
+      const brGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      brGroup.setAttribute("id", "brazil-states-group");
+
+      const states = brazilDoc.querySelectorAll(".state");
+      states.forEach(state => {
+        state.setAttribute("stroke", "#FFFFFF");
+        state.setAttribute("stroke-width", "0.8");
+        
+        const stateId = `BR-${state.id}`;
+        if (siteData.map.activeRegions && siteData.map.activeRegions[stateId]) {
+          state.setAttribute("class", "state active-region");
+        }
+        brGroup.appendChild(state.cloneNode(true));
       });
 
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 19
-      }).addTo(mainMapInstance);
+      const scaleX = bbox.width / 353.845;
+      const scaleY = bbox.height / 367.766;
+      brGroup.setAttribute("transform", `translate(${bbox.x}, ${bbox.y}) scale(${scaleX}, ${scaleY})`);
+      originalBrPath.parentNode.replaceChild(brGroup, originalBrPath);
     }
 
-    // Clear previous markers
-    mainMapInstance.eachLayer((layer) => {
-      if (layer instanceof L.Marker) {
-        mainMapInstance.removeLayer(layer);
-      }
-    });
+    highlightActiveMapRegions();
+    setupMapInteractivity();
 
-    // Custom Green Leaf Pin Icon
-    const greenPinIcon = L.divIcon({
-      className: 'yfe-map-pin',
-      html: `<div style="background: #2D6A4F; width: 32px; height: 32px; border-radius: 50%; border: 3px solid #FFFFFF; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px;">🌱</div>`,
-      iconSize: [32, 32],
-      iconAnchor: [16, 16],
-      popupAnchor: [0, -16]
-    });
-
-    // Fetch locations from Supabase
-    let locationsList = [];
-    if (supabaseClient) {
-      const { data, error } = await supabaseClient.from("locations").select("*");
-      if (!error && data) {
-        locationsList = data;
-      }
-    }
-
-    const validCoords = [];
-    locationsList.forEach(loc => {
-      const lat = parseFloat(loc.latitude);
-      const lng = parseFloat(loc.longitude);
-      if (!isNaN(lat) && !isNaN(lng)) {
-        validCoords.push([lat, lng]);
-        const marker = L.marker([lat, lng], { icon: greenPinIcon }).addTo(mainMapInstance);
-        marker.bindPopup(`
-          <div style="font-family: var(--font-sans); padding: 4px; color: #0F1D15; max-width: 220px;">
-            <span style="font-size: 10px; font-weight: 800; color: #2D6A4F; text-transform: uppercase; letter-spacing: 1px;">${loc.biome || 'Location'}</span>
-            <h4 style="margin: 4px 0 6px 0; font-family: var(--font-headings); font-size: 15px; font-weight: 700; color: #0F1D15;">${loc.name}</h4>
-            <p style="margin: 0; font-size: 12px; color: #4A5D52; line-height: 1.4;">${loc.description || ''}</p>
-          </div>
-        `);
-      }
-    });
-
-    if (validCoords.length > 0) {
-      const bounds = L.latLngBounds(validCoords);
-      if (bounds.isValid()) {
-        mainMapInstance.fitBounds(bounds, { padding: [50, 50], maxZoom: 6 });
-      }
-    }
+  } catch (error) {
+    console.error("Error loading the interactive map:", error);
+    const loading = document.getElementById("map-loading");
+    if (loading) loading.textContent = "Error loading the map.";
   }
+}
+
+function highlightActiveMapRegions() {
+  const mapContainer = document.getElementById("map-container");
+  if (!mapContainer) return;
+
+  const activeRegions = siteData.map.activeRegions || {};
+
+  mapContainer.querySelectorAll(".map-svg path, .map-svg polygon, .map-svg .state, .map-svg g").forEach(el => {
+    let id = el.id;
+    if (!id) return;
+    if (id.length === 2 && el.classList.contains("state")) {
+      id = `BR-${id}`;
+    }
+
+    if (activeRegions[id] || activeRegions[el.id]) {
+      el.classList.add("active-region");
+    } else {
+      el.classList.remove("active-region");
+    }
+  });
 }
 
 function setupMapInteractivity() {
   const tooltip = document.getElementById("map-tooltip");
-  const activeElements = document.querySelectorAll(".map-svg .active-region, .map-svg path, .map-svg polygon");
+  if (!tooltip) return;
 
-  activeElements.forEach(el => {
-    // Only add interactive effects to regions marked as active
-    const regionId = el.id ? (el.id.length === 2 ? `BR-${el.id}` : el.id) : null;
-    const regionData = siteData.map.activeRegions[regionId];
+  const elements = document.querySelectorAll(".map-svg .state, .map-svg path, .map-svg polygon");
 
-    if (regionData) {
-      el.classList.add("active-region");
-      
-      el.addEventListener("mouseenter", (e) => {
+  elements.forEach(el => {
+    el.addEventListener("mouseenter", (e) => {
+      let regionId = el.id ? (el.id.length === 2 && el.classList.contains("state") ? `BR-${el.id}` : el.id) : null;
+      const regionData = siteData.map.activeRegions ? (siteData.map.activeRegions[regionId] || siteData.map.activeRegions[el.id]) : null;
+
+      if (regionData) {
         tooltip.style.opacity = "1";
         tooltip.innerHTML = `
-          <strong>${el.getAttribute("id") || "Region"}</strong><br/>
-          📍 Focus: ${regionData.area}<br/>
-          🌱 Actions: ${regionData.actions}
+          <strong>${regionData.area || regionId || "Active Region"}</strong><br/>
+          🌱 Youth for Environment Action Zone
         `;
-      });
+      }
+    });
 
-      el.addEventListener("mousemove", (e) => {
-        const mapBox = document.getElementById("map-container").getBoundingClientRect();
-        const x = e.clientX - mapBox.left + 15;
-        const y = e.clientY - mapBox.top + 15;
-        tooltip.style.left = `${x}px`;
-        tooltip.style.top = `${y}px`;
-      });
+    el.addEventListener("mousemove", (e) => {
+      const mapContainer = document.getElementById("map-container");
+      if (!mapContainer) return;
+      const mapBox = mapContainer.getBoundingClientRect();
+      const x = e.clientX - mapBox.left + 15;
+      const y = e.clientY - mapBox.top + 15;
+      tooltip.style.left = `${x}px`;
+      tooltip.style.top = `${y}px`;
+    });
 
-      el.addEventListener("mouseleave", () => {
-        tooltip.style.opacity = "0";
-      });
-    }
+    el.addEventListener("mouseleave", () => {
+      tooltip.style.opacity = "0";
+    });
   });
 }
 
