@@ -1,7 +1,8 @@
-// --- SUPABASE CLIENT INITIALIZATION ---
-const SUPABASE_URL = "https://jihhwwjtzdxatbhelqiy.supabase.co";
-const SUPABASE_KEY = "sb_publishable_nHW4cG5wcI9bMEj3gmUHrw_MPGdYnGK";
-const supabaseClient = (typeof supabase !== "undefined") ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+// --- FIREBASE FIRESTORE INITIALIZATION ---
+import { db } from "./firebase-config.js";
+import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-firestore.js";
+
+const CACHE_KEY = "yfe_site_cache_v1";
 
 // --- DEFAULT / FALLBACK DATA ---
 const DEFAULT_DATA = {
@@ -58,48 +59,103 @@ const DEFAULT_DATA = {
 };
 
 // State management
-let siteData = { ...DEFAULT_DATA };
+let siteData = { ...DEFAULT_DATA, stats: {}, joinDescription: "" };
 let activeSociety = "YFC";
 let activeTab = "about";
 
-// --- DYNAMIC DATA FETCHERS (SUPABASE) ---
-async function fetchSupabaseData() {
-  if (!supabaseClient) return;
-
-  // 1. Fetch Site Content (About texts & Join description)
+function applyCachedData() {
   try {
-    const { data: contentData, error: contentErr } = await supabaseClient.from("site_content").select("*");
-    if (!contentErr && contentData && contentData.length > 0) {
-      contentData.forEach(item => {
-        if (item.key === "about_text1") siteData.about.text1 = item.value;
-        if (item.key === "about_text2") siteData.about.text2 = item.value;
-        if (item.key === "about_text3") siteData.about.text3 = item.value;
-        if (item.key === "join_description") {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return;
+    const cached = JSON.parse(raw);
+    if (cached.about) siteData.about = { ...siteData.about, ...cached.about };
+    if (cached.societies) siteData.societies = { ...siteData.societies, ...cached.societies };
+    if (Array.isArray(cached.events) && cached.events.length > 0) siteData.events = cached.events;
+    if (cached.map && cached.map.activeRegions) siteData.map.activeRegions = cached.map.activeRegions;
+    if (cached.joinDescription) {
+      siteData.joinDescription = cached.joinDescription;
+      const joinEl = document.getElementById("join-description");
+      if (joinEl) joinEl.textContent = cached.joinDescription;
+    }
+    if (cached.stats) {
+      siteData.stats = cached.stats;
+      applyStatsToDOM(cached.stats);
+    }
+  } catch (err) {
+    console.warn("Could not read cached site data:", err);
+  }
+}
+
+function saveCache() {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({
+      about: siteData.about,
+      societies: siteData.societies,
+      events: siteData.events,
+      map: siteData.map,
+      stats: siteData.stats,
+      joinDescription: siteData.joinDescription
+    }));
+  } catch (err) {
+    console.warn("Could not cache site data:", err);
+  }
+}
+
+function applyStatsToDOM(stats) {
+  const mapIds = {
+    stat1_num: "stat1-num", stat1_lbl: "stat1-lbl",
+    stat2_num: "stat2-num", stat2_lbl: "stat2-lbl",
+    stat3_num: "stat3-num", stat3_lbl: "stat3-lbl",
+    stat4_num: "stat4-num", stat4_lbl: "stat4-lbl"
+  };
+  Object.entries(mapIds).forEach(([key, domId]) => {
+    if (stats[key] !== undefined) {
+      const el = document.getElementById(domId);
+      if (el) el.textContent = stats[key];
+    }
+  });
+}
+
+// --- DYNAMIC DATA FETCHERS (CLOUD FIRESTORE) ---
+async function fetchFirestoreData() {
+  if (!db) return;
+
+  // 1. Fetch Site Content (About texts, Join description, Stats)
+  try {
+    const snap = await getDocs(collection(db, "site_content"));
+    if (!snap.empty) {
+      const statsUpdate = {};
+      snap.forEach(docSnap => {
+        const key = docSnap.id;
+        const value = docSnap.data().value;
+        if (value === undefined) return;
+        if (key === "about_text1") siteData.about.text1 = value;
+        else if (key === "about_text2") siteData.about.text2 = value;
+        else if (key === "about_text3") siteData.about.text3 = value;
+        else if (key === "join_description") {
+          siteData.joinDescription = value;
           const joinEl = document.getElementById("join-description");
-          if (joinEl) joinEl.textContent = item.value;
+          if (joinEl) joinEl.textContent = value;
+        } else if (key.startsWith("stat")) {
+          statsUpdate[key] = value;
         }
-        if (item.key === "stat1_num") { const el = document.getElementById("stat1-num"); if (el) el.textContent = item.value; }
-        if (item.key === "stat1_lbl") { const el = document.getElementById("stat1-lbl"); if (el) el.textContent = item.value; }
-        if (item.key === "stat2_num") { const el = document.getElementById("stat2-num"); if (el) el.textContent = item.value; }
-        if (item.key === "stat2_lbl") { const el = document.getElementById("stat2-lbl"); if (el) el.textContent = item.value; }
-        if (item.key === "stat3_num") { const el = document.getElementById("stat3-num"); if (el) el.textContent = item.value; }
-        if (item.key === "stat3_lbl") { const el = document.getElementById("stat3-lbl"); if (el) el.textContent = item.value; }
-        if (item.key === "stat4_num") { const el = document.getElementById("stat4-num"); if (el) el.textContent = item.value; }
-        if (item.key === "stat4_lbl") { const el = document.getElementById("stat4-lbl"); if (el) el.textContent = item.value; }
       });
+      siteData.stats = { ...siteData.stats, ...statsUpdate };
+      applyStatsToDOM(siteData.stats);
       renderAboutUs();
     }
   } catch (err) {
-    console.error("Error fetching site content:", err);
+    console.error("Error fetching site content from Firestore:", err);
   }
 
-  // 2. Fetch Societies from Supabase
+  // 2. Fetch Societies from Firestore
   try {
-    const { data: socData, error: socError } = await supabaseClient.from("societies").select("*");
-    if (!socError && socData && socData.length > 0) {
-      socData.forEach(item => {
-        siteData.societies[item.id] = {
-          name: item.name,
+    const snap = await getDocs(collection(db, "societies"));
+    if (!snap.empty) {
+      snap.forEach(docSnap => {
+        const item = docSnap.data();
+        siteData.societies[docSnap.id] = {
+          name: item.name || docSnap.id,
           about: item.description || "",
           achievements: item.achievements || ""
         };
@@ -107,40 +163,47 @@ async function fetchSupabaseData() {
       renderSocieties();
     }
   } catch (err) {
-    console.error("Error fetching societies from Supabase:", err);
+    console.error("Error fetching societies from Firestore:", err);
   }
 
-  // 3. Fetch Events from Supabase
+  // 3. Fetch Events from Firestore
   try {
-    const { data: evData, error: evError } = await supabaseClient.from("events").select("*").order("created_at", { ascending: false });
-    if (!evError && evData && evData.length > 0) {
-      siteData.events = evData.map(ev => ({
-        id: ev.id,
-        title: ev.title,
-        description: ev.description || "",
-        date: ev.date,
-        type: ev.tag || "Event",
-        location: ev.location || ""
-      }));
+    const q = query(collection(db, "events"), orderBy("created_at", "desc"));
+    const snap = await getDocs(q);
+    if (!snap.empty) {
+      siteData.events = snap.docs.map(docSnap => {
+        const ev = docSnap.data();
+        return {
+          id: docSnap.id,
+          title: ev.title,
+          description: ev.description || "",
+          date: ev.date,
+          type: ev.tag || "Event",
+          location: ev.location || ""
+        };
+      });
       renderEvents();
     }
   } catch (err) {
-    console.error("Error fetching events from Supabase:", err);
+    console.error("Error fetching events from Firestore:", err);
   }
 
-  // 4. Fetch Active Regions for the Map from Supabase
+  // 4. Fetch Active Regions for the Map from Firestore
   try {
-    const { data: regData, error: regErr } = await supabaseClient.from("active_regions").select("*");
-    if (!regErr && regData && regData.length > 0) {
+    const snap = await getDocs(collection(db, "active_regions"));
+    if (!snap.empty) {
       siteData.map.activeRegions = {};
-      regData.forEach(reg => {
-        siteData.map.activeRegions[reg.id] = { actions: 1, area: reg.name || reg.id };
+      snap.forEach(docSnap => {
+        const reg = docSnap.data();
+        siteData.map.activeRegions[docSnap.id] = { actions: 1, area: reg.name || docSnap.id };
       });
       highlightActiveMapRegions();
     }
   } catch (err) {
-    console.error("Error fetching active regions:", err);
+    console.error("Error fetching active regions from Firestore:", err);
   }
+
+  saveCache();
 }
 
 // --- DOM RENDERING FUNCTIONS ---
@@ -454,6 +517,9 @@ document.addEventListener("DOMContentLoaded", () => {
   setupDonationSystem();
   setupModal();
   
+  // Apply local cache first for instant display, then sync from Firestore
+  applyCachedData();
+
   // Render initial content
   renderAboutUs();
   renderSocieties();
@@ -462,6 +528,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Load interactive map
   loadInteractiveMap();
 
-  // Fetch dynamic data from Supabase database
-  fetchSupabaseData();
+  // Fetch dynamic data from Cloud Firestore database
+  fetchFirestoreData();
 });
