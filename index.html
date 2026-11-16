@@ -81,44 +81,22 @@
   <!-- ABOUT US SECTION -->
   <section class="section-padding light-section" id="about">
     <div class="container">
-      <div class="center-badge-wrapper">
-        <span class="section-badge">ABOUT US</span>
-      </div>
-      <h2 class="section-title">Building a Greener Future Together</h2>
-      <p class="section-subtitle">Discover the global Youth for Environment movement and our mission for biological conservation.</p>
-      
       <div class="about-grid">
-        <div class="about-text" id="about-content">
-          <p class="highlight-text">
-            Youth for Environment is a global youth-led movement that began in Brazil with the mission of empowering young people to protect their local biomes while participating in environmental governance and climate action.
-          </p>
-          <p>
-            Through reforestation initiatives, awareness campaigns, and youth-led policy discussions, we connect local environmental challenges to the global climate crisis.
-          </p>
-          <p>
-            We believe the generation most affected by climate change must also help shape the decisions surrounding it. That’s why we work to ensure young people are not just future leaders, but active voices.
-          </p>
+        <div class="about-text-column">
+          <span class="section-badge">ABOUT US</span>
+          <h2 class="section-title">Building a Greener Future Together</h2>
+          <p class="section-subtitle">Discover the global Youth for Environment movement and our mission for biological conservation.</p>
           
-          <!-- Metas de Impacto (Inspirado no primeiro design) -->
-          <div class="about-features">
-            <div class="feature-item">
-              <div class="feature-header">
-                <span class="feature-title">Ecological Biome Restoration</span>
-                <span class="feature-val">85%</span>
-              </div>
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: 85%"></div>
-              </div>
-            </div>
-            <div class="feature-item">
-              <div class="feature-header">
-                <span class="feature-title">Youth Engagement & Governance</span>
-                <span class="feature-val">95%</span>
-              </div>
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: 95%"></div>
-              </div>
-            </div>
+          <div class="about-text" id="about-content">
+            <p class="highlight-text" id="about-text1">
+              Youth for Environment is a global youth-led movement that began in Brazil with the mission of empowering young people to protect their local biomes while participating in environmental governance and climate action.
+            </p>
+            <p id="about-text2">
+              Through reforestation initiatives, awareness campaigns, and youth-led policy discussions, we connect local environmental challenges to the global climate crisis.
+            </p>
+            <p id="about-text3">
+              We believe the generation most affected by climate change must also help shape the decisions surrounding it. That’s why we work to ensure young people are not just future leaders, but active voices.
+            </p>
           </div>
         </div>
         <div class="about-image-wrapper">
@@ -128,7 +106,7 @@
     </div>
   </section>
 
-  <!-- OUR SOCIETIES SECTION -->
+  <!-- OUR SOCIETIES & JOIN SECTION -->
   <section class="section-padding dark-section" id="societies">
     <div class="container">
       <div class="center-badge-wrapper">
@@ -154,21 +132,28 @@
           </button>
         </div>
 
-        <!-- Exibição de Conteúdo da Sociedade Ativa -->
+        <!-- Exibição de Conteúdo da Sociedade Ativa (Lado a Lado) -->
         <div class="society-content-display glass-card">
-          <div class="society-tabs">
-            <button class="tab-link active" data-tab="about" id="tab-society-about">About the Society</button>
-            <button class="tab-link" data-tab="achievements" id="tab-society-achievements">Achievements</button>
-          </div>
-
-          <div class="tab-content">
-            <div class="tab-pane active" id="pane-about">
+          <div class="society-split-grid">
+            <div class="society-col" id="pane-about">
+              <h4 class="society-col-title" id="tab-society-about">About the Society</h4>
               <p id="society-about-text">Loading society information...</p>
             </div>
-            <div class="tab-pane" id="pane-achievements">
+            <div class="society-col" id="pane-achievements">
+              <h4 class="society-col-title" id="tab-society-achievements">Achievements</h4>
               <p id="society-achievements-text">Loading achievements...</p>
             </div>
           </div>
+        </div>
+
+        <!-- JOIN THE TEAM BANNER (Integrado às Sociedades) -->
+        <div class="glass-card join-banner" id="join">
+          <span class="section-badge badge-light">GET INVOLVED</span>
+          <h3>Join Our Network</h3>
+          <p id="join-description">
+            Join one of our numerous societies across different regions and countries around the world, or start your own and bring the movement to your community. Through reforestation projects, awareness campaigns, environmental advocacy, and youth-led action, our societies connect local biome preservation to the global fight against climate change.
+          </p>
+          <button class="btn btn-primary btn-gold" id="btn-open-form">Apply to Join a Society</button>
         </div>
       </div>
     </div>
@@ -190,20 +175,6 @@
           </div>
         </div>
         <div class="map-tooltip" id="map-tooltip">Tooltip</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- JOIN THE TEAM SECTION -->
-  <section class="section-padding dark-section" id="join">
-    <div class="container">
-      <div class="glass-card join-banner">
-        <span class="section-badge badge-light">GET INVOLVED</span>
-        <h3>Join Our Network</h3>
-        <p id="join-description">
-          Join one of our numerous societies across different regions and countries around the world, or start your own and bring the movement to your community. Through reforestation projects, awareness campaigns, environmental advocacy, and youth-led action, our societies connect local biome preservation to the global fight against climate change.
-        </p>
-        <button class="btn btn-primary btn-gold" id="btn-open-form">Apply to Join a Society</button>
       </div>
     </div>
   </section>
@@ -267,12 +238,12 @@
       <h2 class="section-title">Plant a Tree Today</h2>
       <p class="section-subtitle">Support our environmental cause and help us plant a greener future.</p>
 
-      <div class="glass-card donation-box" style="background: rgba(22, 91, 51, 0.04); border-color: rgba(22, 91, 51, 0.15);">
-        <p id="donation-description-text" style="color: #4A5A4E; text-align: center; font-size: 1.1rem; line-height: 1.7; font-weight: 500;">
+      <div class="glass-card donation-box">
+        <p class="donation-intro" id="donation-description-text">
           Every contribution helps us grow our impact. By donating to Youth for Environment, you support reforestation projects, environmental education, local campaigns, and youth-led climate initiatives around the world.
         </p>
         
-        <h4 style="font-family: var(--font-headings); font-size: 1.4rem; text-align: center; color: #0B3C20;">Select Donation Amount</h4>
+        <h4 class="donation-heading">Select Donation Amount</h4>
         
         <div class="donation-grid" id="donation-presets">
           <button class="donation-option active" data-amount="3">$3</button>
@@ -283,10 +254,10 @@
 
         <div class="custom-donation-input" id="custom-donation-wrapper" style="display: none;">
           <span>$</span>
-          <input type="number" id="custom-amount-input" min="1" placeholder="Enter custom amount" style="color: #0B3C20; border-color: rgba(22, 91, 51, 0.2);">
+          <input type="number" id="custom-amount-input" min="1" placeholder="Enter custom amount">
         </div>
 
-        <button class="btn btn-primary btn-gold" id="btn-donate-paypal" style="width: 100%; font-size: 1.1rem; padding: 1.1rem 0;">Donate via PayPal</button>
+        <button class="btn btn-primary btn-gold donation-submit" id="btn-donate-paypal">Donate via PayPal</button>
       </div>
     </div>
   </section>

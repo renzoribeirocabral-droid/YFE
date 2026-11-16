@@ -150,9 +150,9 @@ function renderAboutUs() {
   if (!container) return;
   
   container.innerHTML = `
-    <p>${siteData.about.text1}</p>
-    <p>${siteData.about.text2}</p>
-    <p>${siteData.about.text3}</p>
+    <p class="highlight-text" id="about-text1">${siteData.about.text1}</p>
+    <p id="about-text2">${siteData.about.text2}</p>
+    <p id="about-text3">${siteData.about.text3}</p>
   `;
 }
 
@@ -173,14 +173,16 @@ function renderEvents() {
 
   grid.innerHTML = siteData.events.map(event => `
     <div class="glass-card event-card">
-      <div>
-        <div class="event-date">${event.date}</div>
+      <div class="event-body">
+        <div class="event-meta">
+          <span class="event-date">${event.date}</span>
+          <span class="event-tag">${event.type}</span>
+        </div>
         <h3 class="event-title">${event.title}</h3>
         <p class="event-description">${event.description}</p>
       </div>
       <div class="event-footer">
         <span>📍 ${event.location}</span>
-        <span class="event-tag">${event.type}</span>
       </div>
     </div>
   `).join("");
